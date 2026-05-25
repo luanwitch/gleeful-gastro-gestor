@@ -118,7 +118,7 @@ function DashboardPage() {
                 <XAxis dataKey="day" fontSize={12} />
                 <YAxis fontSize={12} />
                 <Tooltip
-                  formatter={(v: number) => formatBRL(v)}
+                  formatter={(v) => formatBRL(Number(v))}
                   labelStyle={{ color: "#111" }}
                 />
                 <Line
