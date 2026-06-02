@@ -11,6 +11,8 @@ import {
 import appCss from "../styles.css?url";
 import { Sidebar } from "@/components/Sidebar";
 import { MobileNav } from "@/components/MobileNav";
+import { Toaster } from "sonner";
+
 
 function NotFoundComponent() {
   return (
@@ -114,14 +116,18 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen bg-muted/30">
-        <Sidebar />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8 overflow-x-hidden">
-          <Outlet />
-        </main>
-        <MobileNav />
-      </div>
-    </QueryClientProvider>
+  <QueryClientProvider client={queryClient}>
+    <div className="flex min-h-screen bg-muted/30">
+      <Sidebar />
+
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8 overflow-x-hidden">
+        <Outlet />
+      </main>
+
+      <MobileNav />
+    </div>
+
+    <Toaster richColors position="top-right" />
+  </QueryClientProvider>
   );
 }

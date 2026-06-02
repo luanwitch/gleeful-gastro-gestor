@@ -6,6 +6,7 @@ import { Card } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
 import { Loading, ErrorBox, EmptyState } from "@/components/States";
 import { formatBRL, formatDateTime } from "@/lib/format";
+import { toast } from "sonner"
 
 export const Route = createFileRoute("/vendas")({
   component: SalesPage,
@@ -70,11 +71,15 @@ function SalesPage() {
         payment_method: payment,
         items: [{ product: Number(productId), quantity }],
       });
+
+      toast.success("Venda registrada com sucesso!");
+
+
       setQuantity(1);
       setPayment("pix");
       await load();
     } catch {
-      setFormError("Não foi possível registrar a venda.");
+     toast.error("Não foi possível registrar a venda.");
     } finally {
       setSubmitting(false);
     }
@@ -99,7 +104,9 @@ function SalesPage() {
                 className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Selecione...</option>
-                {products.map((p) => (
+                    {products
+                      .filter((p) => p.active)
+                      .map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.name} — {formatBRL(p.price)}
                   </option>
@@ -107,14 +114,24 @@ function SalesPage() {
               </select>
             </div>
             <div>
-              <label className="text-sm font-medium">Quantidade</label>
-              <input
+                <label className="text-sm font-medium">Quantidade</label>
+                <input
                 type="number"
                 min={1}
                 value={quantity}
                 onChange={(e) => setQuantity(Number(e.target.value))}
                 className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+                />
+                <p className="text-sm text-muted-foreground mt-2">
+                  Subtotal:{" "}
+                  <span className="font-semibold text-foreground">
+                    {formatBRL(
+                     Number(
+                        products.find((p) => p.id === Number(productId))?.price ?? 0
+                      ) * quantity
+                    )}
+                  </span>
+                </p>
             </div>
             <div>
               <label className="text-sm font-medium">Forma de pagamento</label>

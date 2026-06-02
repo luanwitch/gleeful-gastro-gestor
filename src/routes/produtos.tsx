@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { api } from "@/services/api";
 import type { Product } from "@/types";
@@ -6,29 +6,48 @@ import { Card } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
 import { Loading, ErrorBox, EmptyState } from "@/components/States";
 import { formatBRL, formatDate } from "@/lib/format";
+import { getMe } from "@/services/user";
+
 
 export const Route = createFileRoute("/produtos")({
   component: ProductsPage,
 });
 
 function ProductsPage() {
+
+  const navigate = useNavigate();
+
+useEffect(() => {
+  async function checkPermission() {
+    try {
+      const user = await getMe();
+
+      if (!user.is_staff && !user.is_superuser) {
+        navigate({ to: "/" });
+      }
+    } catch {
+      navigate({ to: "/login" });
+    }
+  }
+
+  checkPermission();
+}, [navigate]);
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Form state
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [active, setActive] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   async function load() {
     try {
       setLoading(true);
-      const { data } = await api.get<Product[] | { results: Product[] }>(
-        "products/",
-      );
+      const { data } = await api.get<Product[] | { results: Product[] }>("products/");
       setProducts(Array.isArray(data) ? data : data.results ?? []);
     } catch {
       setError("Erro ao carregar produtos.");
@@ -41,27 +60,79 @@ function ProductsPage() {
     load();
   }, []);
 
+  function resetForm() {
+    setName("");
+    setPrice("");
+    setActive(true);
+    setEditingProduct(null);
+    setFormError(null);
+  }
+
+  function handleEdit(product: Product) {
+    setEditingProduct(product);
+    setName(product.name);
+    setPrice(String(product.price));
+    setActive(product.active);
+    setFormError(null);
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setFormError(null);
     setSubmitting(true);
+
+    const payload = {
+      name,
+      price,
+      active,
+      category: null,
+    };
+
     try {
-      await api.post("products/", {
-        name,
-        price,
-        active,
-        category: null,
-      });
-      setName("");
-      setPrice("");
-      setActive(true);
+      if (editingProduct) {
+        await api.put(`products/${editingProduct.id}/`, payload);
+      } else {
+        await api.post("products/", payload);
+      }
+
+      resetForm();
       await load();
     } catch {
-      setFormError("Não foi possível cadastrar o produto.");
+      setFormError(
+        editingProduct
+          ? "Não foi possível atualizar o produto."
+          : "Não foi possível cadastrar o produto."
+      );
     } finally {
       setSubmitting(false);
     }
   }
+
+async function handleDelete(product: Product) {
+  if (!confirm("Deseja inativar este produto?")) return;
+
+  try {
+    await api.patch(`products/${product.id}/`, {
+      active: false,
+    });
+
+    await load();
+  } catch {
+    alert("Não foi possível inativar o produto.");
+  }
+}
+
+async function toggleProduct(product: Product) {
+  try {
+    await api.patch(`products/${product.id}/`, {
+      active: !product.active,
+    });
+
+    await load();
+  } catch {
+    alert("Não foi possível atualizar o produto.");
+  }
+}
 
   return (
     <div>
@@ -72,7 +143,10 @@ function ProductsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="p-5 lg:col-span-1 h-fit">
-          <h2 className="text-lg font-semibold mb-4">Novo produto</h2>
+          <h2 className="text-lg font-semibold mb-4">
+            {editingProduct ? "Editar produto" : "Novo produto"}
+          </h2>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="text-sm font-medium">Nome</label>
@@ -84,6 +158,7 @@ function ProductsPage() {
                 placeholder="Ex: Prato feito"
               />
             </div>
+
             <div>
               <label className="text-sm font-medium">Preço (R$)</label>
               <input
@@ -97,6 +172,7 @@ function ProductsPage() {
                 placeholder="25.00"
               />
             </div>
+
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
@@ -106,14 +182,30 @@ function ProductsPage() {
               />
               Produto ativo
             </label>
+
             {formError && <ErrorBox message={formError} />}
+
             <button
               type="submit"
               disabled={submitting}
               className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50 transition"
             >
-              {submitting ? "Salvando..." : "Cadastrar produto"}
+              {submitting
+                ? "Salvando..."
+                : editingProduct
+                  ? "Atualizar produto"
+                  : "Cadastrar produto"}
             </button>
+
+            {editingProduct && (
+              <button
+                type="button"
+                onClick={resetForm}
+                className="w-full rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted transition"
+              >
+                Cancelar edição
+              </button>
+            )}
           </form>
         </Card>
 
@@ -121,6 +213,7 @@ function ProductsPage() {
           <div className="px-5 py-4 border-b">
             <h2 className="text-lg font-semibold">Cadastrados</h2>
           </div>
+
           {loading ? (
             <Loading />
           ) : error ? (
@@ -139,8 +232,10 @@ function ProductsPage() {
                     <th className="px-5 py-3 font-medium">Preço</th>
                     <th className="px-5 py-3 font-medium">Status</th>
                     <th className="px-5 py-3 font-medium">Criado em</th>
+                    <th className="px-5 py-3 font-medium text-right">Ações</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {products.map((p) => (
                     <tr key={p.id} className="border-t">
@@ -162,6 +257,26 @@ function ProductsPage() {
                       </td>
                       <td className="px-5 py-3 text-muted-foreground">
                         {formatDate(p.created_at)}
+                      </td>
+                      <td className="px-5 py-3">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => handleEdit(p)}
+                            className="rounded-lg border px-3 py-1 hover:bg-muted"
+                          >
+                            Editar
+                          </button>
+                          <button
+                                onClick={() => toggleProduct(p)}
+                                className={`rounded-lg px-3 py-1 text-white ${
+                                  p.active
+                                    ? "bg-red-500 hover:bg-red-600"
+                                    : "bg-emerald-500 hover:bg-emerald-600"
+                                }`}
+                              >
+                                {p.active ? "Inativar" : "Ativar"}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

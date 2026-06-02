@@ -61,3 +61,24 @@ export interface SalesPerDay {
   day: string;
   total: number;
 }
+
+export interface DashboardSummary {
+  total_sales: number;
+  total_revenue: number;
+  total_expenses: number;
+  net_profit: number;
+  average_ticket: number;
+
+  today_revenue: number;
+  today_expenses: number;
+  today_profit: number;
+
+  month_revenue: number;
+  month_expenses: number;
+  month_profit: number;
+
+  best_seller: {
+    product__name: string;
+    total_sold: number;
+  } | null;
+}
