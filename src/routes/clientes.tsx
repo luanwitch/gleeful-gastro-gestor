@@ -86,8 +86,10 @@ function ClientesPage() {
     return;
   }
 
-  if (!phone.trim()) {
-    alert("Telefone é obrigatório");
+  const phoneDigits = phone.replace(/\D/g, "");
+
+  if (phoneDigits.length < 10) {
+    toast.error("Telefone é obrigatório");
     setSubmitting(false);
     return;
   }
