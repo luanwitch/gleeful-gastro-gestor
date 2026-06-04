@@ -78,12 +78,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Gestão de Restaurante" },
       { name: "description", content: "Sistema MVP de gestão de restaurante" },
-      { name: "author", content: "Lovable" },
+      { name: "author", content: "Luan" },
       { property: "og:title", content: "Gestão de Restaurante" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:description", content: "Sistema de Gestão para Restaurantes" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@luanvlw23" },
     ],
     links: [
       {
