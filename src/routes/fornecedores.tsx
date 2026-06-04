@@ -80,6 +80,20 @@ function FornecedoresPage() {
     e.preventDefault();
     setSubmitting(true);
 
+    if (!name.trim()) {
+    toast.error("Nome é obrigatório");
+    setSubmitting(false);
+    return;
+  }
+
+  const phoneDigits = phone.replace(/\D/g, "");
+
+  if (phoneDigits.length < 10) {
+    toast.error("Telefone é obrigatório");
+    setSubmitting(false);
+    return;
+  }
+
     const payload = {
       name,
       phone,
@@ -177,7 +191,7 @@ function FornecedoresPage() {
                 checked={active}
                 onChange={(e) => setActive(e.target.checked)}
               />
-              Cliente ativo
+              Fornecedor ativo
             </label>
 
             <button
@@ -206,7 +220,7 @@ function FornecedoresPage() {
 
         <Card className="lg:col-span-2 overflow-hidden">
           <div className="px-5 py-4 border-b">
-            <h2 className="text-lg font-semibold">Clientes cadastrados</h2>
+            <h2 className="text-lg font-semibold">Fornecedores cadastrados</h2>
           </div>
 
           {loading ? (
