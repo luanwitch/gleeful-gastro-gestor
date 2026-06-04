@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { Loading, ErrorBox, EmptyState } from "@/components/States";
 import { formatBRL, formatDate } from "@/lib/format";
 import { getMe } from "@/services/user";
+import { toast } from "sonner";
 
 
 export const Route = createFileRoute("/produtos")({
@@ -118,7 +119,7 @@ async function handleDelete(product: Product) {
 
     await load();
   } catch {
-    alert("Não foi possível inativar o produto.");
+    toast.success("Não foi possível inativar o produto.");
   }
 }
 
