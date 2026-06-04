@@ -81,7 +81,7 @@ function FornecedoresPage() {
     setSubmitting(true);
 
     if (!name.trim()) {
-    toast.error("Nome é obrigatório");
+    toast.error("Informe o nome do fornecedor.");
     setSubmitting(false);
     return;
   }
@@ -89,7 +89,7 @@ function FornecedoresPage() {
   const phoneDigits = phone.replace(/\D/g, "");
 
   if (phoneDigits.length < 10) {
-    toast.error("Telefone é obrigatório");
+    toast.error("Informe um telefone válido.");
     setSubmitting(false);
     return;
   }

@@ -79,7 +79,7 @@ function DashboardPage() {
   }));
 
   return (
-    <div>
+    <div className="pb-20 md:pb-0">
       <PageHeader
         title="Dashboard"
         description="Visão geral do desempenho do restaurante"
@@ -181,7 +181,7 @@ function DashboardPage() {
             Sem vendas registradas ainda.
           </p>
         ) : (
-          <div className="h-72">
+          <div className="h-56 sm:h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
                 <CartesianGrid

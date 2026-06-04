@@ -80,16 +80,16 @@ function ClientesPage() {
     e.preventDefault();
     setSubmitting(true);
 
-    if (!name.trim()) {
-    alert("Nome é obrigatório");
-    setSubmitting(false);
-    return;
-  }
+   if (!name.trim()) {
+  toast.error("Informe o nome do cliente.");
+  setSubmitting(false);
+  return;
+}
 
   const phoneDigits = phone.replace(/\D/g, "");
 
   if (phoneDigits.length < 10) {
-    toast.error("Telefone é obrigatório");
+    toast.error("Informe um telefone válido.");
     setSubmitting(false);
     return;
   }
