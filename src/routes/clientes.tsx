@@ -80,6 +80,18 @@ function ClientesPage() {
     e.preventDefault();
     setSubmitting(true);
 
+    if (!name.trim()) {
+    alert("Nome é obrigatório");
+    setSubmitting(false);
+    return;
+  }
+
+  if (!phone.trim()) {
+    alert("Telefone é obrigatório");
+    setSubmitting(false);
+    return;
+  }
+
     const payload = {
       name,
       phone,
