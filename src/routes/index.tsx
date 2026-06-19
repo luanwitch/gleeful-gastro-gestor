@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { isAuthenticated } from "@/services/auth";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import {
   LineChart,
   Line,
@@ -64,6 +66,70 @@ function DashboardPage() {
 
     load();
 
+  async function handleExportPDF() {
+  const response = await api.get("reports/dashboard/");
+  const report = response.data;
+
+  const doc = new jsPDF();
+
+  doc.setFontSize(18);
+  doc.text("Relatório Restaurante MVP", 14, 20);
+
+  doc.setFontSize(11);
+  doc.text(`Gerado em: ${new Date().toLocaleString()}`, 14, 28);
+
+  doc.setFontSize(14);
+  doc.text("Resumo Financeiro", 14, 42);
+
+  autoTable(doc, {
+    startY: 48,
+    head: [["Indicador", "Valor"]],
+    body: [
+      ["Faturamento total", formatBRL(report.summary.total_revenue)],
+      ["Despesas totais", formatBRL(report.summary.total_expenses)],
+      ["Lucro líquido", formatBRL(report.summary.net_profit)],
+      ["Total de vendas", String(report.summary.total_sales)],
+      ["Ticket médio", formatBRL(report.summary.average_ticket)],
+      [
+        "Mais vendido",
+        report.summary.best_seller
+          ? `${report.summary.best_seller.product__name} (${report.summary.best_seller.total_sold} unidades)`
+          : "—",
+      ],
+    ],
+  });
+
+  doc.text("Estoque", 14, (doc as any).lastAutoTable.finalY + 14);
+
+  autoTable(doc, {
+    startY: (doc as any).lastAutoTable.finalY + 20,
+    head: [["Ingrediente", "Atual", "Mínimo", "Status"]],
+    body: report.ingredients.map((ingredient: any) => [
+      ingredient.name,
+      `${ingredient.current_stock} ${ingredient.unit}`,
+      `${ingredient.minimum_stock} ${ingredient.unit}`,
+      ingredient.status === "low_stock" ? "Estoque baixo" : "OK",
+    ]),
+  });
+
+  doc.text("Movimentações recentes", 14, (doc as any).lastAutoTable.finalY + 14);
+
+  autoTable(doc, {
+    startY: (doc as any).lastAutoTable.finalY + 20,
+    head: [["Data", "Tipo", "Ingrediente", "Quantidade", "Observação"]],
+    body: report.movements.map((movement: any) => [
+      new Date(movement.created_at).toLocaleString(),
+      movement.movement_type === "in" ? "Entrada" : "Saída",
+      movement.ingredient_name,
+      movement.quantity,
+      movement.notes,
+    ]),
+  });
+
+  doc.save("relatorio-restaurante.pdf");
+}
+
+
     return () => {
       cancelled = true;
     };
@@ -77,6 +143,73 @@ function DashboardPage() {
     ...d,
     day: formatDate(d.day),
   }));
+  
+ async function handleExportPDF() {
+  const response = await api.get("reports/dashboard/");
+  const report = response.data;
+
+  const doc = new jsPDF();
+
+  doc.setFontSize(18);
+  doc.text("Relatório Restaurante MVP", 14, 20);
+
+  doc.setFontSize(11);
+  doc.text(`Gerado em: ${new Date().toLocaleString()}`, 14, 28);
+
+  doc.setFontSize(14);
+  doc.text("Resumo Financeiro", 14, 42);
+
+  autoTable(doc, {
+    startY: 48,
+    head: [["Indicador", "Valor"]],
+    body: [
+      ["Faturamento total", formatBRL(report.summary.total_revenue)],
+      ["Despesas totais", formatBRL(report.summary.total_expenses)],
+      ["Lucro líquido", formatBRL(report.summary.net_profit)],
+      ["Total de vendas", String(report.summary.total_sales)],
+      ["Ticket médio", formatBRL(report.summary.average_ticket)],
+      [
+        "Mais vendido",
+        report.summary.best_seller
+          ? `${report.summary.best_seller.product__name} (${report.summary.best_seller.total_sold} unidades)`
+          : "—",
+      ],
+    ],
+  });
+
+  const afterSummaryY = (doc as any).lastAutoTable.finalY + 14;
+
+  doc.text("Estoque", 14, afterSummaryY);
+
+  autoTable(doc, {
+    startY: afterSummaryY + 6,
+    head: [["Ingrediente", "Atual", "Mínimo", "Status"]],
+    body: report.ingredients.map((ingredient: any) => [
+      ingredient.name,
+      `${ingredient.current_stock} ${ingredient.unit}`,
+      `${ingredient.minimum_stock} ${ingredient.unit}`,
+      ingredient.status === "low_stock" ? "Estoque baixo" : "OK",
+    ]),
+  });
+
+  const afterStockY = (doc as any).lastAutoTable.finalY + 14;
+
+  doc.text("Movimentações recentes", 14, afterStockY);
+
+  autoTable(doc, {
+    startY: afterStockY + 6,
+    head: [["Data", "Tipo", "Ingrediente", "Quantidade", "Observação"]],
+    body: report.movements.map((movement: any) => [
+      new Date(movement.created_at).toLocaleString(),
+      movement.movement_type === "in" ? "Entrada" : "Saída",
+      movement.ingredient_name,
+      movement.quantity,
+      movement.notes,
+    ]),
+  });
+
+  doc.save("relatorio-restaurante.pdf");
+}
 
   return (
     <div className="pb-20 md:pb-0">
@@ -84,6 +217,15 @@ function DashboardPage() {
         title="Dashboard"
         description="Visão geral do desempenho do restaurante"
       />
+
+      <div className="mb-4">
+      <button
+        onClick={handleExportPDF}
+        className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+      >
+        Exportar PDF
+      </button>
+    </div>
 
       <div className="mb-6 flex flex-wrap gap-2">
       {[
@@ -107,6 +249,18 @@ function DashboardPage() {
     </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <StatCard
+          label="Estoque baixo"
+          value={summary.low_stock_count}
+          hint={
+            summary.low_stock_count === 1
+              ? "1 ingrediente precisa de reposição"
+              : `${summary.low_stock_count} ingredientes precisam de reposição`
+          }
+          accent={summary.low_stock_count > 0 ? "danger" : "success"}
+        />
+
         <StatCard
           label="Faturamento total"
           value={formatBRL(summary.total_revenue)}

@@ -7,6 +7,8 @@ import {
   ChefHat,
   Users,
   Truck,
+  Boxes,
+  FileText,
 } from "lucide-react";
 import { logout } from "@/services/auth";
 import { useNavigate } from "@tanstack/react-router";
@@ -38,6 +40,19 @@ const links = [
   icon: Truck,
   adminOnly: true,
 },
+{
+  to: "/inventory",
+  label: "Estoque",
+  adminOnly: true,
+  icon: Boxes,
+},
+{
+  to:"/reports/sales",
+  label: "Rel. Vendas",
+  adminOnly: true,
+  icon: FileText,
+},
+
 ] as const;
 
 export function Sidebar() {

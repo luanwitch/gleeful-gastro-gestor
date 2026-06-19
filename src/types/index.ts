@@ -1,5 +1,7 @@
 // Shared TypeScript types for the restaurant MVP
 
+import { ReactNode } from "react";
+
 export interface Product {
   id: number;
   category: number | null;
@@ -45,24 +47,13 @@ export interface Expense {
   created_at: string;
 }
 
-export interface DashboardSummary {
-  total_sales: number;
-  total_revenue: number;
-  total_expenses: number;
-  net_profit: number;
-  average_ticket: number;
-  best_seller: {
-    product__name: string;
-    total_sold: number;
-  } | null;
-}
-
 export interface SalesPerDay {
   day: string;
   total: number;
 }
 
 export interface DashboardSummary {
+  low_stock_count: number;
   total_sales: number;
   total_revenue: number;
   total_expenses: number;
