@@ -7,6 +7,16 @@ export const api = axios.create({
   },
 });
 
+export const getStockMovements = async () => {
+  const response = await api.get("/stock-movements/")
+  return response.data;
+};
+
+export const getLowStockIngredients = async () => {
+  const response = await api.get("/ingredients/low_stock");
+  return response.data;
+}
+
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (token: string) => void;

@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VendasRouteImport } from './routes/vendas'
+import { Route as StockMovementsRouteImport } from './routes/stock-movements'
+import { Route as ReceitasRouteImport } from './routes/receitas'
 import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InventoryRouteImport } from './routes/inventory'
@@ -22,6 +24,16 @@ import { Route as ReportsSalesRouteImport } from './routes/reports.sales'
 const VendasRoute = VendasRouteImport.update({
   id: '/vendas',
   path: '/vendas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StockMovementsRoute = StockMovementsRouteImport.update({
+  id: '/stock-movements',
+  path: '/stock-movements',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReceitasRoute = ReceitasRouteImport.update({
+  id: '/receitas',
+  path: '/receitas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProdutosRoute = ProdutosRouteImport.update({
@@ -73,6 +85,8 @@ export interface FileRoutesByFullPath {
   '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/produtos': typeof ProdutosRoute
+  '/receitas': typeof ReceitasRoute
+  '/stock-movements': typeof StockMovementsRoute
   '/vendas': typeof VendasRoute
   '/reports/sales': typeof ReportsSalesRoute
 }
@@ -84,6 +98,8 @@ export interface FileRoutesByTo {
   '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/produtos': typeof ProdutosRoute
+  '/receitas': typeof ReceitasRoute
+  '/stock-movements': typeof StockMovementsRoute
   '/vendas': typeof VendasRoute
   '/reports/sales': typeof ReportsSalesRoute
 }
@@ -96,6 +112,8 @@ export interface FileRoutesById {
   '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/produtos': typeof ProdutosRoute
+  '/receitas': typeof ReceitasRoute
+  '/stock-movements': typeof StockMovementsRoute
   '/vendas': typeof VendasRoute
   '/reports/sales': typeof ReportsSalesRoute
 }
@@ -109,6 +127,8 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/login'
     | '/produtos'
+    | '/receitas'
+    | '/stock-movements'
     | '/vendas'
     | '/reports/sales'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +140,8 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/login'
     | '/produtos'
+    | '/receitas'
+    | '/stock-movements'
     | '/vendas'
     | '/reports/sales'
   id:
@@ -131,6 +153,8 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/login'
     | '/produtos'
+    | '/receitas'
+    | '/stock-movements'
     | '/vendas'
     | '/reports/sales'
   fileRoutesById: FileRoutesById
@@ -143,6 +167,8 @@ export interface RootRouteChildren {
   InventoryRoute: typeof InventoryRoute
   LoginRoute: typeof LoginRoute
   ProdutosRoute: typeof ProdutosRoute
+  ReceitasRoute: typeof ReceitasRoute
+  StockMovementsRoute: typeof StockMovementsRoute
   VendasRoute: typeof VendasRoute
   ReportsSalesRoute: typeof ReportsSalesRoute
 }
@@ -154,6 +180,20 @@ declare module '@tanstack/react-router' {
       path: '/vendas'
       fullPath: '/vendas'
       preLoaderRoute: typeof VendasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stock-movements': {
+      id: '/stock-movements'
+      path: '/stock-movements'
+      fullPath: '/stock-movements'
+      preLoaderRoute: typeof StockMovementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/receitas': {
+      id: '/receitas'
+      path: '/receitas'
+      fullPath: '/receitas'
+      preLoaderRoute: typeof ReceitasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/produtos': {
@@ -223,6 +263,8 @@ const rootRouteChildren: RootRouteChildren = {
   InventoryRoute: InventoryRoute,
   LoginRoute: LoginRoute,
   ProdutosRoute: ProdutosRoute,
+  ReceitasRoute: ReceitasRoute,
+  StockMovementsRoute: StockMovementsRoute,
   VendasRoute: VendasRoute,
   ReportsSalesRoute: ReportsSalesRoute,
 }
