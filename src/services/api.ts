@@ -13,9 +13,9 @@ export const getStockMovements = async () => {
 };
 
 export const getLowStockIngredients = async () => {
-  const response = await api.get("/ingredients/low_stock");
+  const response = await api.get("/ingredients/low_stock/");
   return response.data;
-}
+};
 
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -86,12 +86,9 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/token/refresh/",
-        {
-          refresh: refreshToken,
-        }
-      );
+       const response = await api.post("/token/refresh/", {
+        refresh: refreshToken,
+      });
 
       const newAccessToken = response.data.access;
 
