@@ -67,23 +67,29 @@ function SalesPage() {
     }
     setSubmitting(true);
     try {
-      await api.post("sales/", {
-        payment_method: payment,
-        items: [{ product: Number(productId), quantity }],
-      });
+  await api.post("sales/", {
+    payment_method: payment,
+    items: [{ product: Number(productId), quantity }],
+  });
 
-      toast.success("Venda registrada com sucesso!");
+  toast.success("Venda registrada com sucesso!");
 
+  setQuantity(1);
+  setPayment("pix");
+  await load();
+} catch (err: any) {
+  console.error("Erro ao registrar venda:", err?.response?.data);
 
-      setQuantity(1);
-      setPayment("pix");
-      await load();
-    } catch {
-     toast.error("Não foi possível registrar a venda.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
+  const message =
+    err?.response?.data?.error ||
+    err?.response?.data?.detail ||
+    "Não foi possível registrar a venda.";
+
+  toast.error(message);
+ } finally {
+  setSubmitting(false);
+ }
+}
 
   return (
     <div>

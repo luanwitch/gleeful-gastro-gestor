@@ -3,12 +3,12 @@ import { api } from "@/services/api";
 import { formatBRL } from "@/lib/format";
 
 type SaleItem = {
-  id: number;
-  product: number;
+  id?: number;
+  product?: number;
   product_name: string;
   quantity: number;
   unit_price: string;
-  subtotal: string;
+  subtotal?: string;
 };
 
 type SaleReport = {
@@ -33,6 +33,12 @@ export function SalesReport() {
     },
     retry: false,
   });
+
+  function safeNumber(value: unknown) {
+  const number = Number(value);
+  return Number.isNaN(number) ? 0 : number;
+}
+
 
   if (isLoading) {
     return (
@@ -108,14 +114,20 @@ export function SalesReport() {
                   <td className="p-3 font-semibold">
                     {formatBRL(Number(sale.total))}
                   </td>
-
                   <td className="p-3">
-                    {sale.items.map((item) => (
-                      <div key={item.id}>
-                        {item.product_name} — {item.quantity}x{" "}
-                        ({formatBRL(Number(item.subtotal))})
-                      </div>
-                    ))}
+                    {sale.items.map((item, index) => {
+                      const itemTotal = item.subtotal
+                        ? safeNumber(item.subtotal)
+                        : item.unit_price
+                          ? safeNumber(item.unit_price) * item.quantity
+                          : 0;
+
+                      return (
+                        <div key={`${item.product_name}-${index}`}>
+                          {item.product_name} — {item.quantity}x ({formatBRL(itemTotal)})
+                        </div>
+                      );
+                    })}
                   </td>
                 </tr>
               ))
