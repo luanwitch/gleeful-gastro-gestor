@@ -44,22 +44,38 @@ useEffect(() => {
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [search, setSearch] = useState("");
 
-  async function load() {
-    try {
-      setLoading(true);
-      const { data } = await api.get<Product[] | { results: Product[] }>("products/");
-      setProducts(Array.isArray(data) ? data : data.results ?? []);
-    } catch {
-      setError("Erro ao carregar produtos.");
-    } finally {
-      setLoading(false);
-    }
+  async function load(searchTerm = search) {
+  try {
+    setLoading(true);
+    setError(null);
+
+    const params = searchTerm ? { search: searchTerm } : undefined;
+
+    const { data } = await api.get<Product[] | { results: Product[] }>(
+      "products/",
+      { params }
+    );
+
+    console.log("BUSCA:", searchTerm);
+    console.log("DATA:", data);
+
+    setProducts(Array.isArray(data) ? data : data.results ?? []);
+  } catch {
+    setError("Erro ao carregar produtos.");
+  } finally {
+    setLoading(false);
   }
+}
 
   useEffect(() => {
-    load();
-  }, []);
+  const timeout = setTimeout(() => {
+    load(search);
+  }, 400);
+
+  return () => clearTimeout(timeout);
+}, [search]);
 
   function resetForm() {
     setName("");
@@ -211,10 +227,16 @@ async function toggleProduct(product: Product) {
         </Card>
 
         <Card className="lg:col-span-2 overflow-hidden">
-          <div className="px-5 py-4 border-b">
-            <h2 className="text-lg font-semibold">Cadastrados</h2>
-          </div>
+              <div className="px-5 py-4 border-b space-y-3">
+                <h2 className="text-lg font-semibold">Cadastrados</h2>
 
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Buscar produto..."
+                  className="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
           {loading ? (
             <Loading />
           ) : error ? (
