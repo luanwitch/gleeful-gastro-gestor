@@ -41,13 +41,13 @@ export function Inventory() {
    * useQuery<Ingredient[]> informa ao TypeScript que essa query
    * retorna uma lista de ingredientes.
    */
-  const { data: ingredients = [], isLoading } = useQuery<Ingredient[]>({
-    queryKey: ["ingredients"],
-    queryFn: async () => {
-      const response = await api.get("/ingredients/");
-      return response.data;
-    },
-  });
+ const { data: ingredients = [], isLoading } = useQuery<Ingredient[]>({
+  queryKey: ["ingredients"],
+  queryFn: async () => {
+    const response = await api.get("/ingredients/");
+    return response.data;
+  },
+});
 
   /**
    * Consulta o histórico de movimentações do estoque.

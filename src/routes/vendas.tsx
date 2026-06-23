@@ -43,9 +43,11 @@ function SalesPage() {
         : p.data.results ?? [];
       setSales(salesData);
       setProducts(productsData);
-      if (!productId && productsData.length) {
-        setProductId(String(productsData[0].id));
+      const activeProducts = productsData.filter((p) => p.active);
+      if (!productId && activeProducts.length) {
+        setProductId(String(activeProducts[0].id));
       }
+
     } catch {
       setError("Erro ao carregar dados.");
     } finally {
@@ -110,13 +112,11 @@ function SalesPage() {
                 className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Selecione...</option>
-                    {products
-                      .filter((p) => p.active)
-                      .map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name} — {formatBRL(p.price)}
-                  </option>
-                ))}
+                    {products.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name} — {formatBRL(p.price)} {p.active ? "" : "(Inativo)"}
+                      </option>
+                    ))}
               </select>
             </div>
             <div>
