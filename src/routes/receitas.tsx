@@ -18,6 +18,13 @@ type Recipe = {
   quantity: string;
 };
 
+type ProductProfitability = {
+  productName: string;
+  totalCost: number;
+  profit: number;
+  margin: number;
+};
+
 function RecipesPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,53 +50,61 @@ function RecipesPage() {
   }, []);
 
   const groupedRecipes = useMemo(() => {
-  return recipes.reduce<Record<string, Recipe[]>>((acc, recipe) => {
-    if (!acc[recipe.product_name]) {
-      acc[recipe.product_name] = [];
-    }
+    return recipes.reduce<Record<string, Recipe[]>>((acc, recipe) => {
+      if (!acc[recipe.product_name]) {
+        acc[recipe.product_name] = [];
+      }
 
-    acc[recipe.product_name].push(recipe);
-    return acc;
-  }, {});
-}, [recipes]);
+      acc[recipe.product_name].push(recipe);
+      return acc;
+    }, {});
+  }, [recipes]);
 
-const recipeStats = useMemo(() => {
-  const products = Object.entries(groupedRecipes).map(([productName, items]) => {
-    const totalCost = items.reduce((sum, recipe) => {
-      return sum + Number(recipe.quantity) * Number(recipe.ingredient_cost);
-    }, 0);
+  const recipeStats = useMemo(() => {
+    const products: ProductProfitability[] = Object.entries(groupedRecipes).map(
+      ([productName, items]) => {
+        const totalCost = items.reduce((sum, recipe) => {
+          return sum + Number(recipe.quantity) * Number(recipe.ingredient_cost);
+        }, 0);
 
-    const salePrice = Number(items[0]?.product_price ?? 0);
-    const profit = salePrice - totalCost;
-    const margin = salePrice > 0 ? (profit / salePrice) * 100 : 0;
+        const salePrice = Number(items[0]?.product_price ?? 0);
+        const profit = salePrice - totalCost;
+        const margin = salePrice > 0 ? (profit / salePrice) * 100 : 0;
+
+        return {
+          productName,
+          totalCost,
+          profit,
+          margin,
+        };
+      }
+    );
+
+    const fallbackProduct: ProductProfitability = {
+      productName: "—",
+      totalCost: 0,
+      profit: 0,
+      margin: 0,
+    };
 
     return {
-      productName,
-      totalCost,
-      profit,
-      margin,
+      productsCount: products.length,
+      averageCost:
+        products.reduce((sum, p) => sum + p.totalCost, 0) /
+        (products.length || 1),
+      averageProfit:
+        products.reduce((sum, p) => sum + p.profit, 0) /
+        (products.length || 1),
+      bestMargin: products.reduce(
+        (best, p) => (p.margin > best.margin ? p : best),
+        fallbackProduct
+      ),
+      mostProfitable: products.reduce(
+        (best, p) => (p.profit > best.profit ? p : best),
+        fallbackProduct
+      ),
     };
-  });
-
-  return {
-    productsCount: products.length,
-    averageCost:
-      products.reduce((sum, p) => sum + p.totalCost, 0) /
-      (products.length || 1),
-    averageProfit:
-      products.reduce((sum, p) => sum + p.profit, 0) /
-      (products.length || 1),
-    bestMargin: products.reduce(
-      (best, p) => (p.margin > best.margin ? p : best),
-      {
-        productName: "—",
-        totalCost: 0,
-        profit: 0,
-        margin: 0,
-      }
-    ),
-  };
-}, [groupedRecipes]);
+  }, [groupedRecipes]);
 
   return (
     <div>
@@ -101,32 +116,57 @@ const recipeStats = useMemo(() => {
       <Card className="mb-4 p-5">
   <h2 className="text-lg font-semibold mb-4">📊 Resumo</h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
-        <div className="rounded-lg border p-3">
-          <p className="text-muted-foreground">Produtos cadastrados</p>
-          <p className="font-semibold">{recipeStats.productsCount}</p>
-        </div>
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+    <div className="rounded-lg border p-3">
+      <p className="text-muted-foreground">Produtos cadastrados</p>
+      <p className="font-semibold">{recipeStats.productsCount}</p>
+    </div>
 
-        <div className="rounded-lg border p-3">
-          <p className="text-muted-foreground">Custo médio</p>
-          <p className="font-semibold">R$ {recipeStats.averageCost.toFixed(2)}</p>
-        </div>
+    <div className="rounded-lg border p-3">
+      <p className="text-muted-foreground">Custo médio</p>
+      <p className="font-semibold">
+        R$ {recipeStats.averageCost.toFixed(2)}
+      </p>
+    </div>
 
-        <div className="rounded-lg border p-3">
-          <p className="text-muted-foreground">Lucro médio</p>
-          <p className="font-semibold text-emerald-600">
-            R$ {recipeStats.averageProfit.toFixed(2)}
-          </p>
-        </div>
+    <div className="rounded-lg border p-3">
+      <p className="text-muted-foreground">Lucro médio</p>
+      <p className="font-semibold text-emerald-600">
+        R$ {recipeStats.averageProfit.toFixed(2)}
+      </p>
+    </div>
+  </div>
 
-        <div className="rounded-lg border p-3">
-          <p className="text-muted-foreground">Maior margem</p>
-          <p className="font-semibold">
-            {recipeStats.bestMargin.productName} ({recipeStats.bestMargin.margin.toFixed(1)}%)
-          </p>
+    <div className="mt-4">
+      <h3 className="font-semibold mb-3">🏆 Destaques</h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div className="rounded-lg border p-3">
+              <p className="text-muted-foreground">Maior margem</p>
+
+              <p className="font-semibold">
+                {recipeStats.bestMargin.productName}
+              </p>
+
+              <p className="text-emerald-600 font-semibold">
+                {recipeStats.bestMargin.margin.toFixed(1)}%
+              </p>
+            </div>
+
+            <div className="rounded-lg border p-3">
+              <p className="text-muted-foreground">Mais lucrativo</p>
+
+              <p className="font-semibold">
+                {recipeStats.mostProfitable.productName}
+              </p>
+
+              <p className="text-emerald-600 font-semibold">
+                R$ {recipeStats.mostProfitable.profit.toFixed(2)}
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
 
       {loading ? (
         <Card className="p-5">
@@ -169,13 +209,13 @@ const recipeStats = useMemo(() => {
                     return (
                       <div
                         key={recipe.id}
-                        className="flex items-center justify-between rounded-lg border px-3 py-2 text-sm"
+                        className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm"
                       >
                         <span className="font-medium">
                           {recipe.ingredient_name}
                         </span>
 
-                        <span className="text-muted-foreground">
+                        <span className="text-muted-foreground text-right">
                           {recipe.quantity} {recipe.ingredient_unit} × R${" "}
                           {Number(recipe.ingredient_cost).toFixed(2)} = R${" "}
                           {itemCost.toFixed(2)}
@@ -187,26 +227,40 @@ const recipeStats = useMemo(() => {
 
                 <div className="mt-4 border-t pt-3 text-sm font-semibold text-emerald-600">
                   Custo total: R$ {totalCost.toFixed(2)}
+                </div>
 
-                  <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
-                    <div className="rounded-lg border p-3">
-                      <p className="text-muted-foreground">Preço venda</p>
-                      <p className="font-semibold">R$ {salePrice.toFixed(2)}</p>
-                    </div>
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
+                  <div className="rounded-lg border p-3">
+                    <p className="text-muted-foreground">Preço venda</p>
+                    <p className="font-semibold">
+                      R$ {salePrice.toFixed(2)}
+                    </p>
+                  </div>
 
-                    <div className="rounded-lg border p-3">
-                      <p className="text-muted-foreground">Lucro</p>
-                      <p className={profit >= 0 ? "font-semibold text-emerald-600" : "font-semibold text-red-600"}>
-                        R$ {profit.toFixed(2)}
-                      </p>
-                    </div>
+                  <div className="rounded-lg border p-3">
+                    <p className="text-muted-foreground">Lucro</p>
+                    <p
+                      className={
+                        profit >= 0
+                          ? "font-semibold text-emerald-600"
+                          : "font-semibold text-red-600"
+                      }
+                    >
+                      R$ {profit.toFixed(2)}
+                    </p>
+                  </div>
 
-                    <div className="rounded-lg border p-3">
-                      <p className="text-muted-foreground">Margem</p>
-                      <p className={margin >= 0 ? "font-semibold text-emerald-600" : "font-semibold text-red-600"}>
-                        {margin.toFixed(1)}%
-                      </p>
-                    </div>
+                  <div className="rounded-lg border p-3">
+                    <p className="text-muted-foreground">Margem</p>
+                    <p
+                      className={
+                        margin >= 0
+                          ? "font-semibold text-emerald-600"
+                          : "font-semibold text-red-600"
+                      }
+                    >
+                      {margin.toFixed(1)}%
+                    </p>
                   </div>
                 </div>
               </Card>
