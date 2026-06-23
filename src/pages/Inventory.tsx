@@ -13,6 +13,7 @@ type Ingredient = {
   unit: string;
   current_stock: string;
   minimum_stock: string;
+  cost_per_unit: string | number;
   active: boolean;
 };
 
@@ -83,6 +84,7 @@ export function Inventory() {
               <th className="p-3 text-left">Ingrediente</th>
               <th className="p-3 text-left">Estoque atual</th>
               <th className="p-3 text-left">Estoque mínimo</th>
+              <th className="p-3 text-left">Custo unitário</th>
               <th className="p-3 text-left">Status</th>
             </tr>
           </thead>
@@ -104,6 +106,10 @@ export function Inventory() {
                   <td className="p-3">
                     {ingredient.minimum_stock} {ingredient.unit}
                   </td>
+
+                    <td className="p-3">
+                      R$ {Number(ingredient.cost_per_unit).toFixed(2)} / {ingredient.unit}
+                    </td>
 
                   <td className="p-3">
                     {isLowStock ? (
@@ -131,11 +137,13 @@ export function Inventory() {
           <table className="w-full text-sm">
             <thead className="bg-muted">
               <tr>
+                //Colunas
                 <th className="p-3 text-left">Data</th>
                 <th className="p-3 text-left">Tipo</th>
                 <th className="p-3 text-left">Ingrediente</th>
                 <th className="p-3 text-left">Quantidade</th>
                 <th className="p-3 text-left">Observação</th>
+                <th className="p-3 text-left">Status</th>
               </tr>
             </thead>
 

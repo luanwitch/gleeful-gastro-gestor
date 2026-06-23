@@ -83,7 +83,7 @@ export interface DashboardSummary {
 export interface StockMovement {
     id: number;
     ingredient: number;
-    movement_name: string;
+    ingredient_name: string;
     movement_type: "in" |  "out";
     quantity: string | number;
     notes: string;
@@ -96,5 +96,7 @@ export interface Ingredient {
   unit: string;
   current_stock: string;
   minimum_stock: string;
+  cost_per_unit: string | number;
   active: boolean;
 }
+
