@@ -137,7 +137,6 @@ export function Inventory() {
           <table className="w-full text-sm">
             <thead className="bg-muted">
               <tr>
-                //Colunas
                 <th className="p-3 text-left">Data</th>
                 <th className="p-3 text-left">Tipo</th>
                 <th className="p-3 text-left">Ingrediente</th>
