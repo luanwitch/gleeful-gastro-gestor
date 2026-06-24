@@ -8,6 +8,8 @@ export interface Product {
   category_name?: string | null;
   name: string;
   price: Money;
+  stock_quantity: number;
+  min_stock: number;
   active: boolean;
   created_at: string;
 }

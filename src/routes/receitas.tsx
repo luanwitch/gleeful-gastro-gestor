@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { api } from "@/services/api";
 import { Card } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
+import type { Product } from "@/types";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/receitas")({
   component: RecipesPage,
@@ -10,12 +12,22 @@ export const Route = createFileRoute("/receitas")({
 
 type Recipe = {
   id: number;
+  product: number;
   product_name: string;
   product_price: string;
+  ingredient: number;
   ingredient_name: string;
   ingredient_unit: string;
   ingredient_cost: string;
   quantity: string;
+};
+
+type Ingredient = {
+  id: number;
+  name: string;
+  unit: string;
+  cost_per_unit: string | number;
+  active: boolean;
 };
 
 type ProductProfitability = {
@@ -27,16 +39,52 @@ type ProductProfitability = {
 
 function RecipesPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+
+  const [productId, setProductId] = useState("");
+  const [ingredientId, setIngredientId] = useState("");
+  const [quantity, setQuantity] = useState("");
+
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function loadRecipes() {
+  async function loadData() {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await api.get<Recipe[]>("recipes/");
-      setRecipes(response.data);
+      const [recipesResponse, productsResponse, ingredientsResponse] =
+        await Promise.all([
+          api.get<Recipe[] | { results: Recipe[] }>("recipes/"),
+          api.get<Product[] | { results: Product[] }>("products/"),
+          api.get<Ingredient[] | { results: Ingredient[] }>("ingredients/"),
+        ]);
+
+      const recipesData = Array.isArray(recipesResponse.data)
+        ? recipesResponse.data
+        : recipesResponse.data.results ?? [];
+
+      const productsData = Array.isArray(productsResponse.data)
+        ? productsResponse.data
+        : productsResponse.data.results ?? [];
+
+      const ingredientsData = Array.isArray(ingredientsResponse.data)
+        ? ingredientsResponse.data
+        : ingredientsResponse.data.results ?? [];
+
+      setRecipes(recipesData);
+      setProducts(productsData);
+      setIngredients(ingredientsData);
+
+      if (!productId && productsData.length > 0) {
+        setProductId(String(productsData[0].id));
+      }
+
+      if (!ingredientId && ingredientsData.length > 0) {
+        setIngredientId(String(ingredientsData[0].id));
+      }
     } catch (error) {
       console.error(error);
       setError("Não foi possível carregar as receitas.");
@@ -46,8 +94,55 @@ function RecipesPage() {
   }
 
   useEffect(() => {
-    loadRecipes();
+    loadData();
   }, []);
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+
+    if (!productId || !ingredientId || !quantity) {
+      toast.error("Preencha produto, ingrediente e quantidade.");
+      return;
+    }
+
+    try {
+      setSaving(true);
+
+      await api.post("recipes/", {
+        product: Number(productId),
+        ingredient: Number(ingredientId),
+        quantity,
+      });
+
+      toast.success("Receita cadastrada com sucesso!");
+
+      setQuantity("");
+      await loadData();
+    } catch (error: any) {
+      console.error(error?.response?.data);
+
+      const message =
+        error?.response?.data?.error ||
+        error?.response?.data?.detail ||
+        "Não foi possível cadastrar a receita.";
+
+      toast.error(message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete(recipeId: number) {
+    if (!confirm("Deseja remover este ingrediente da receita?")) return;
+
+    try {
+      await api.delete(`recipes/${recipeId}/`);
+      toast.success("Ingrediente removido da receita.");
+      await loadData();
+    } catch {
+      toast.error("Não foi possível remover o ingrediente.");
+    }
+  }
 
   const groupedRecipes = useMemo(() => {
     return recipes.reduce<Record<string, Recipe[]>>((acc, recipe) => {
@@ -61,24 +156,24 @@ function RecipesPage() {
   }, [recipes]);
 
   const recipeStats = useMemo(() => {
-    const products: ProductProfitability[] = Object.entries(groupedRecipes).map(
-      ([productName, items]) => {
-        const totalCost = items.reduce((sum, recipe) => {
-          return sum + Number(recipe.quantity) * Number(recipe.ingredient_cost);
-        }, 0);
+    const productsStats: ProductProfitability[] = Object.entries(
+      groupedRecipes
+    ).map(([productName, items]) => {
+      const totalCost = items.reduce((sum, recipe) => {
+        return sum + Number(recipe.quantity) * Number(recipe.ingredient_cost);
+      }, 0);
 
-        const salePrice = Number(items[0]?.product_price ?? 0);
-        const profit = salePrice - totalCost;
-        const margin = salePrice > 0 ? (profit / salePrice) * 100 : 0;
+      const salePrice = Number(items[0]?.product_price ?? 0);
+      const profit = salePrice - totalCost;
+      const margin = salePrice > 0 ? (profit / salePrice) * 100 : 0;
 
-        return {
-          productName,
-          totalCost,
-          profit,
-          margin,
-        };
-      }
-    );
+      return {
+        productName,
+        totalCost,
+        profit,
+        margin,
+      };
+    });
 
     const fallbackProduct: ProductProfitability = {
       productName: "—",
@@ -88,18 +183,18 @@ function RecipesPage() {
     };
 
     return {
-      productsCount: products.length,
+      productsCount: productsStats.length,
       averageCost:
-        products.reduce((sum, p) => sum + p.totalCost, 0) /
-        (products.length || 1),
+        productsStats.reduce((sum, p) => sum + p.totalCost, 0) /
+        (productsStats.length || 1),
       averageProfit:
-        products.reduce((sum, p) => sum + p.profit, 0) /
-        (products.length || 1),
-      bestMargin: products.reduce(
+        productsStats.reduce((sum, p) => sum + p.profit, 0) /
+        (productsStats.length || 1),
+      bestMargin: productsStats.reduce(
         (best, p) => (p.margin > best.margin ? p : best),
         fallbackProduct
       ),
-      mostProfitable: products.reduce(
+      mostProfitable: productsStats.reduce(
         (best, p) => (p.profit > best.profit ? p : best),
         fallbackProduct
       ),
@@ -114,40 +209,104 @@ function RecipesPage() {
       />
 
       <Card className="mb-4 p-5">
-  <h2 className="text-lg font-semibold mb-4">📊 Resumo</h2>
+        <h2 className="text-lg font-semibold mb-4">Nova receita</h2>
 
-  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-    <div className="rounded-lg border p-3">
-      <p className="text-muted-foreground">Produtos cadastrados</p>
-      <p className="font-semibold">{recipeStats.productsCount}</p>
-    </div>
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-4 gap-3"
+        >
+          <div>
+            <label className="text-sm font-medium">Produto</label>
+            <select
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
+              className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
+            >
+              <option value="">Selecione...</option>
+              {products
+                .filter((product) => product.active)
+                .map((product) => (
+                  <option key={product.id} value={product.id}>
+                    {product.name}
+                  </option>
+                ))}
+            </select>
+          </div>
 
-    <div className="rounded-lg border p-3">
-      <p className="text-muted-foreground">Custo médio</p>
-      <p className="font-semibold">
-        R$ {recipeStats.averageCost.toFixed(2)}
-      </p>
-    </div>
+          <div>
+            <label className="text-sm font-medium">Ingrediente</label>
+            <select
+              value={ingredientId}
+              onChange={(e) => setIngredientId(e.target.value)}
+              className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
+            >
+              <option value="">Selecione...</option>
+              {ingredients
+                .filter((ingredient) => ingredient.active)
+                .map((ingredient) => (
+                  <option key={ingredient.id} value={ingredient.id}>
+                    {ingredient.name} ({ingredient.unit})
+                  </option>
+                ))}
+            </select>
+          </div>
 
-    <div className="rounded-lg border p-3">
-      <p className="text-muted-foreground">Lucro médio</p>
-      <p className="font-semibold text-emerald-600">
-        R$ {recipeStats.averageProfit.toFixed(2)}
-      </p>
-    </div>
-  </div>
+          <div>
+            <label className="text-sm font-medium">Quantidade</label>
+            <input
+              type="number"
+              step="0.001"
+              min="0.001"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              placeholder="Ex: 0.200"
+              className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+          </div>
 
-    <div className="mt-4">
-      <h3 className="font-semibold mb-3">🏆 Destaques</h3>
+          <div className="flex items-end">
+            <button
+              type="submit"
+              disabled={saving}
+              className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+            >
+              {saving ? "Salvando..." : "Adicionar"}
+            </button>
+          </div>
+        </form>
+      </Card>
+
+      <Card className="mb-4 p-5">
+        <h2 className="text-lg font-semibold mb-4">📊 Resumo</h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+          <div className="rounded-lg border p-3">
+            <p className="text-muted-foreground">Produtos cadastrados</p>
+            <p className="font-semibold">{recipeStats.productsCount}</p>
+          </div>
+
+          <div className="rounded-lg border p-3">
+            <p className="text-muted-foreground">Custo médio</p>
+            <p className="font-semibold">
+              R$ {recipeStats.averageCost.toFixed(2)}
+            </p>
+          </div>
+
+          <div className="rounded-lg border p-3">
+            <p className="text-muted-foreground">Lucro médio</p>
+            <p className="font-semibold text-emerald-600">
+              R$ {recipeStats.averageProfit.toFixed(2)}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <h3 className="font-semibold mb-3">🏆 Destaques</h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div className="rounded-lg border p-3">
               <p className="text-muted-foreground">Maior margem</p>
-
-              <p className="font-semibold">
-                {recipeStats.bestMargin.productName}
-              </p>
-
+              <p className="font-semibold">{recipeStats.bestMargin.productName}</p>
               <p className="text-emerald-600 font-semibold">
                 {recipeStats.bestMargin.margin.toFixed(1)}%
               </p>
@@ -155,11 +314,9 @@ function RecipesPage() {
 
             <div className="rounded-lg border p-3">
               <p className="text-muted-foreground">Mais lucrativo</p>
-
               <p className="font-semibold">
                 {recipeStats.mostProfitable.productName}
               </p>
-
               <p className="text-emerald-600 font-semibold">
                 R$ {recipeStats.mostProfitable.profit.toFixed(2)}
               </p>
@@ -185,8 +342,7 @@ function RecipesPage() {
           {Object.entries(groupedRecipes).map(([productName, items]) => {
             const totalCost = items.reduce((sum, recipe) => {
               return (
-                sum +
-                Number(recipe.quantity) * Number(recipe.ingredient_cost)
+                sum + Number(recipe.quantity) * Number(recipe.ingredient_cost)
               );
             }, 0);
 
@@ -215,11 +371,20 @@ function RecipesPage() {
                           {recipe.ingredient_name}
                         </span>
 
-                        <span className="text-muted-foreground text-right">
-                          {recipe.quantity} {recipe.ingredient_unit} × R${" "}
-                          {Number(recipe.ingredient_cost).toFixed(2)} = R${" "}
-                          {itemCost.toFixed(2)}
-                        </span>
+                        <div className="flex items-center gap-3">
+                          <span className="text-muted-foreground text-right">
+                            {recipe.quantity} {recipe.ingredient_unit} × R${" "}
+                            {Number(recipe.ingredient_cost).toFixed(2)} = R${" "}
+                            {itemCost.toFixed(2)}
+                          </span>
+
+                          <button
+                            onClick={() => handleDelete(recipe.id)}
+                            className="rounded-lg bg-red-500 px-2 py-1 text-xs text-white hover:bg-red-600"
+                          >
+                            Remover
+                          </button>
+                        </div>
                       </div>
                     );
                   })}
@@ -232,9 +397,7 @@ function RecipesPage() {
                 <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
                   <div className="rounded-lg border p-3">
                     <p className="text-muted-foreground">Preço venda</p>
-                    <p className="font-semibold">
-                      R$ {salePrice.toFixed(2)}
-                    </p>
+                    <p className="font-semibold">R$ {salePrice.toFixed(2)}</p>
                   </div>
 
                   <div className="rounded-lg border p-3">

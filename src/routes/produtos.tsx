@@ -7,32 +7,13 @@ import { PageHeader } from "@/components/PageHeader";
 import { Loading, ErrorBox, EmptyState } from "@/components/States";
 import { formatBRL, formatDate } from "@/lib/format";
 import { getMe } from "@/services/user";
-import { toast } from "sonner";
-
 
 export const Route = createFileRoute("/produtos")({
   component: ProductsPage,
 });
 
 function ProductsPage() {
-
   const navigate = useNavigate();
-
-useEffect(() => {
-  async function checkPermission() {
-    try {
-      const user = await getMe();
-
-      if (!user.is_staff && !user.is_superuser) {
-        navigate({ to: "/" });
-      }
-    } catch {
-      navigate({ to: "/login" });
-    }
-  }
-
-  checkPermission();
-}, [navigate]);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,46 +21,63 @@ useEffect(() => {
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [stockQuantity, setStockQuantity] = useState("0");
+  const [minStock, setMinStock] = useState("5");
   const [active, setActive] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [search, setSearch] = useState("");
 
+  useEffect(() => {
+    async function checkPermission() {
+      try {
+        const user = await getMe();
+
+        if (!user.is_staff && !user.is_superuser) {
+          navigate({ to: "/" });
+        }
+      } catch {
+        navigate({ to: "/login" });
+      }
+    }
+
+    checkPermission();
+  }, [navigate]);
+
   async function load(searchTerm = search) {
-  try {
-    setLoading(true);
-    setError(null);
+    try {
+      setLoading(true);
+      setError(null);
 
-    const params = searchTerm ? { search: searchTerm } : undefined;
+      const params = searchTerm ? { search: searchTerm } : undefined;
 
-    const { data } = await api.get<Product[] | { results: Product[] }>(
-      "products/",
-      { params }
-    );
+      const { data } = await api.get<Product[] | { results: Product[] }>(
+        "products/",
+        { params }
+      );
 
-    console.log("BUSCA:", searchTerm);
-    console.log("DATA:", data);
-
-    setProducts(Array.isArray(data) ? data : data.results ?? []);
-  } catch {
-    setError("Erro ao carregar produtos.");
-  } finally {
-    setLoading(false);
+      setProducts(Array.isArray(data) ? data : data.results ?? []);
+    } catch {
+      setError("Erro ao carregar produtos.");
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
   useEffect(() => {
-  const timeout = setTimeout(() => {
-    load(search);
-  }, 400);
+    const timeout = setTimeout(() => {
+      load(search);
+    }, 400);
 
-  return () => clearTimeout(timeout);
-}, [search]);
+    return () => clearTimeout(timeout);
+  }, [search]);
 
   function resetForm() {
     setName("");
     setPrice("");
+    setStockQuantity("0");
+    setMinStock("5");
     setActive(true);
     setEditingProduct(null);
     setFormError(null);
@@ -89,8 +87,15 @@ useEffect(() => {
     setEditingProduct(product);
     setName(product.name);
     setPrice(String(product.price));
+    setStockQuantity(String(product.stock_quantity));
+    setMinStock(String(product.min_stock));
     setActive(product.active);
     setFormError(null);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -101,6 +106,8 @@ useEffect(() => {
     const payload = {
       name,
       price,
+      stock_quantity: Number(stockQuantity),
+      min_stock: Number(minStock),
       active,
       category: null,
     };
@@ -125,31 +132,17 @@ useEffect(() => {
     }
   }
 
-async function handleDelete(product: Product) {
-  if (!confirm("Deseja inativar este produto?")) return;
+  async function toggleProduct(product: Product) {
+    try {
+      await api.patch(`products/${product.id}/`, {
+        active: !product.active,
+      });
 
-  try {
-    await api.patch(`products/${product.id}/`, {
-      active: false,
-    });
-
-    await load();
-  } catch {
-    toast.success("Não foi possível inativar o produto.");
+      await load();
+    } catch {
+      alert("Não foi possível atualizar o produto.");
+    }
   }
-}
-
-async function toggleProduct(product: Product) {
-  try {
-    await api.patch(`products/${product.id}/`, {
-      active: !product.active,
-    });
-
-    await load();
-  } catch {
-    alert("Não foi possível atualizar o produto.");
-  }
-}
 
   return (
     <div>
@@ -171,7 +164,7 @@ async function toggleProduct(product: Product) {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
                 placeholder="Ex: Prato feito"
               />
             </div>
@@ -185,8 +178,30 @@ async function toggleProduct(product: Product) {
                 min="0"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
                 placeholder="25.00"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Estoque Atual</label>
+              <input
+                type="number"
+                min="0"
+                value={stockQuantity}
+                onChange={(e) => setStockQuantity(e.target.value)}
+                className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Estoque Mínimo</label>
+              <input
+                type="number"
+                min="0"
+                value={minStock}
+                onChange={(e) => setMinStock(e.target.value)}
+                className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
               />
             </div>
 
@@ -205,7 +220,7 @@ async function toggleProduct(product: Product) {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50 transition"
+              className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
             >
               {submitting
                 ? "Salvando..."
@@ -218,7 +233,7 @@ async function toggleProduct(product: Product) {
               <button
                 type="button"
                 onClick={resetForm}
-                className="w-full rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted transition"
+                className="w-full rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted"
               >
                 Cancelar edição
               </button>
@@ -227,16 +242,17 @@ async function toggleProduct(product: Product) {
         </Card>
 
         <Card className="lg:col-span-2 overflow-hidden">
-              <div className="px-5 py-4 border-b space-y-3">
-                <h2 className="text-lg font-semibold">Cadastrados</h2>
+          <div className="px-5 py-4 border-b space-y-3">
+            <h2 className="text-lg font-semibold">Cadastrados</h2>
 
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Buscar produto..."
-                  className="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar produto..."
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+          </div>
+
           {loading ? (
             <Loading />
           ) : error ? (
@@ -247,7 +263,7 @@ async function toggleProduct(product: Product) {
             <EmptyState message="Nenhum produto cadastrado." />
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="min-w-[1200px] w-full text-sm">
                 <thead className="bg-muted/50 text-left text-muted-foreground">
                   <tr>
                     <th className="px-5 py-3 font-medium">Nome</th>
@@ -256,6 +272,9 @@ async function toggleProduct(product: Product) {
                     <th className="px-5 py-3 font-medium">Status</th>
                     <th className="px-5 py-3 font-medium">Criado em</th>
                     <th className="px-5 py-3 font-medium text-right">Ações</th>
+                    <th className="px-5 py-3 font-medium">Estoque</th>
+                    <th className="px-5 py-3 font-medium">Mínimo</th>
+                    <th className="px-5 py-3 font-medium">Situação</th>
                   </tr>
                 </thead>
 
@@ -263,10 +282,13 @@ async function toggleProduct(product: Product) {
                   {products.map((p) => (
                     <tr key={p.id} className="border-t">
                       <td className="px-5 py-3 font-medium">{p.name}</td>
+
                       <td className="px-5 py-3 text-muted-foreground">
                         {p.category_name ?? "—"}
                       </td>
+
                       <td className="px-5 py-3">{formatBRL(p.price)}</td>
+
                       <td className="px-5 py-3">
                         <span
                           className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs ${
@@ -278,9 +300,11 @@ async function toggleProduct(product: Product) {
                           {p.active ? "Ativo" : "Inativo"}
                         </span>
                       </td>
+
                       <td className="px-5 py-3 text-muted-foreground">
                         {formatDate(p.created_at)}
                       </td>
+
                       <td className="px-5 py-3">
                         <div className="flex justify-end gap-2">
                           <button
@@ -289,17 +313,36 @@ async function toggleProduct(product: Product) {
                           >
                             Editar
                           </button>
+
                           <button
-                                onClick={() => toggleProduct(p)}
-                                className={`rounded-lg px-3 py-1 text-white ${
-                                  p.active
-                                    ? "bg-red-500 hover:bg-red-600"
-                                    : "bg-emerald-500 hover:bg-emerald-600"
-                                }`}
-                              >
-                                {p.active ? "Inativar" : "Ativar"}
+                            onClick={() => toggleProduct(p)}
+                            className={`rounded-lg px-3 py-1 text-white ${
+                              p.active
+                                ? "bg-red-500 hover:bg-red-600"
+                                : "bg-emerald-500 hover:bg-emerald-600"
+                            }`}
+                          >
+                            {p.active ? "Inativar" : "Ativar"}
                           </button>
                         </div>
+                      </td>
+
+                      <td className="px-5 py-3 font-medium">
+                        {p.stock_quantity}
+                      </td>
+
+                      <td className="px-5 py-3">{p.min_stock}</td>
+
+                      <td className="px-5 py-3">
+                        {p.stock_quantity <= p.min_stock ? (
+                          <span className="text-red-600 font-semibold">
+                            🔴 Estoque baixo
+                          </span>
+                        ) : (
+                          <span className="text-green-600 font-semibold">
+                            ✅ OK
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}
