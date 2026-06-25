@@ -191,14 +191,14 @@ function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
        <StatCard
           label="⚠️ Estoque baixo"
-          value={lowstock.length}
+          value={summary?.low_stock_count ?? 0}
           hint={
             lowstock.length > 0
               ? lowstock
                   .slice(0, 3)
                   .map((item) => item.name)
                   .join(", ")
-              : "Nenhum ingrediente precisa de reposição"
+              : "Produtos/ingredientes precisam de reposição"
           }
           accent={lowstock.length > 0 ? "danger" : "success"}
         />

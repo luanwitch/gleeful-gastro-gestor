@@ -1,5 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { getStockMovements } from "@/services/api";
+import {
+  getStockMovements,
+  getProductStockMovements,
+} from "@/services/api";
 
 interface StockMovement {
   id: number;
@@ -11,11 +14,28 @@ interface StockMovement {
   created_at: string;
 }
 
+interface ProductStockMovement {
+  id: number;
+  product: number;
+  product_name: string;
+  movement_type: "in" | "out";
+  quantity: string | number;
+  notes: string;
+  created_at: string;
+}
+
 export default function StockMovementsPage() {
   const { data = [], isLoading, isError } = useQuery<StockMovement[]>({
     queryKey: ["stock-movements"],
     queryFn: getStockMovements,
   });
+
+  const {
+  data: productMovements = [],
+} = useQuery<ProductStockMovement[]>({
+  queryKey: ["product-stock-movements"],
+  queryFn: getProductStockMovements,
+});
 
   return (
     <div>
@@ -73,6 +93,49 @@ export default function StockMovementsPage() {
               </table>
             </div>
           )}
+        </div>
+        <div className="mt-8">
+  <h2 className="mb-4 text-lg font-semibold">
+    Movimentações de Produtos
+  </h2>
+    <table className="w-full text-sm">
+      <thead>
+        <tr className="border-b text-left">
+          <th className="p-2">Data</th>
+          <th className="p-2">Produto</th>
+          <th className="p-2">Tipo</th>
+          <th className="p-2">Quantidade</th>
+          <th className="p-2">Observação</th>
+        </tr>
+      </thead>
+            <tbody>
+              {productMovements.map((movement) => (
+                <tr key={movement.id} className="border-b">
+                  <td className="p-2">
+                    {new Date(movement.created_at).toLocaleString("pt-BR")}
+                  </td>
+
+                  <td className="p-2">
+                    {movement.product_name}
+                  </td>
+
+                  <td className="p-2">
+                    {movement.movement_type === "in"
+                      ? "Entrada"
+                      : "Saída"}
+                  </td>
+
+                  <td className="p-2">
+                    {movement.quantity}
+                  </td>
+
+                  <td className="p-2">
+                    {movement.notes || "-"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

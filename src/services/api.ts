@@ -7,8 +7,27 @@ export const api = axios.create({
   },
 });
 
+export const addProductStock = async (
+  id: number,
+  quantity: number
+) => {
+  const response = await api.post(
+    `/products/${id}/add_stock/`,
+    {
+      quantity,
+    }
+  );
+
+  return response.data;
+};
+
 export const getStockMovements = async () => {
   const response = await api.get("/stock-movements/")
+  return response.data;
+};
+
+export const getProductStockMovements = async () => {
+  const response = await api.get("/product-stock-movements/");
   return response.data;
 };
 

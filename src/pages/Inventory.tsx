@@ -153,12 +153,16 @@ export function Inventory() {
                     {new Date(movement.created_at).toLocaleString()}
                   </td>
 
-                  <td className="p-3">
-                    {movement.movement_type === "in"
-                      ? "⬆ Entrada"
-                      : "⬇ Saída"}
-                  </td>
-
+                  {movement.movement_type === "in" ? (
+                      <span className="font-semibold text-green-600">
+                          🟢 Entrada
+                      </span>
+                  ) : (
+                      <span className="font-semibold text-red-600">
+                          🔴 Saída
+                      </span>
+                  )}
+                  
                   <td className="p-3">{movement.ingredient_name}</td>
 
                   <td className="p-3">{movement.quantity}</td>

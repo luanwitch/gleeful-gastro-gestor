@@ -28,6 +28,9 @@ function ProductsPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [search, setSearch] = useState("");
+  const [stockProduct, setStockProduct] = useState<Product | null>(null);
+  const [stockAmount, setStockAmount] = useState("")
+  const [addingStock, setAddingStock] = useState(false);
 
   useEffect(() => {
     async function checkPermission() {
@@ -143,6 +146,33 @@ function ProductsPage() {
       alert("Não foi possível atualizar o produto.");
     }
   }
+
+  async function handleAddStock() {
+  if (!stockProduct) return;
+
+  const quantity = Number(stockAmount);
+
+  if (!quantity || quantity <= 0) {
+    alert("Informe uma quantidade válida.");
+    return;
+  }
+
+  try {
+    setAddingStock(true);
+
+    await api.post(`products/${stockProduct.id}/add_stock/`, {
+      quantity,
+    });
+
+    setStockProduct(null);
+    setStockAmount("");
+    await load();
+  } catch {
+    alert("Não foi possível adicionar estoque.");
+  } finally {
+    setAddingStock(false);
+  }
+}
 
   return (
     <div>
@@ -307,13 +337,19 @@ function ProductsPage() {
 
                       <td className="px-5 py-3">
                         <div className="flex justify-end gap-2">
-                          <button
+                        <button
                             onClick={() => handleEdit(p)}
                             className="rounded-lg border px-3 py-1 hover:bg-muted"
                           >
                             Editar
                           </button>
 
+                          <button
+                            onClick={() => setStockProduct(p)}
+                            className="rounded-lg bg-blue-600 px-3 py-1 text-white hover:bg-blue-700"
+                          >
+                            + Estoque
+                          </button>
                           <button
                             onClick={() => toggleProduct(p)}
                             className={`rounded-lg px-3 py-1 text-white ${
@@ -325,6 +361,7 @@ function ProductsPage() {
                             {p.active ? "Inativar" : "Ativar"}
                           </button>
                         </div>
+
                       </td>
 
                       <td className="px-5 py-3 font-medium">
@@ -352,6 +389,52 @@ function ProductsPage() {
           )}
         </Card>
       </div>
+      {stockProduct && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div className="w-full max-w-md rounded-xl bg-background p-6 shadow-lg">
+      <h2 className="text-lg font-semibold mb-4">
+        Adicionar estoque
+      </h2>
+
+      <p className="text-sm text-muted-foreground mb-2">
+        Produto: <strong>{stockProduct.name}</strong>
+      </p>
+
+      <p className="text-sm text-muted-foreground mb-4">
+        Estoque atual: <strong>{stockProduct.stock_quantity}</strong>
+      </p>
+
+      <input
+        type="number"
+        min="1"
+        value={stockAmount}
+        onChange={(e) => setStockAmount(e.target.value)}
+        placeholder="Quantidade"
+        className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+      />
+
+      <div className="mt-4 flex justify-end gap-2">
+        <button
+          onClick={() => {
+            setStockProduct(null);
+            setStockAmount("");
+          }}
+          className="rounded-lg border px-4 py-2 text-sm"
+        >
+          Cancelar
+        </button>
+
+        <button
+          onClick={handleAddStock}
+          disabled={addingStock}
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white disabled:opacity-50"
+        >
+          {addingStock ? "Salvando..." : "Salvar"}
+        </button>
+      </div>
     </div>
+  </div>
+)}
+</div>
   );
 }

@@ -9,6 +9,7 @@ import {
   Truck,
   Boxes,
   FileText,
+  History,
 } from "lucide-react";
 import { logout } from "@/services/auth";
 import { useNavigate } from "@tanstack/react-router";
@@ -28,6 +29,7 @@ const links = [
   { to: "/produtos", label: "Produtos", icon: Package, adminOnly: true },
   { to: "/vendas", label: "Vendas", icon: ShoppingCart, adminOnly: false },
   { to: "/despesas", label: "Despesas", icon: Receipt, adminOnly: true },
+  { to: "/stock-movements", label: "Movimentações", adminOnly: true, icon: History},
   
   {
   to: "/clientes",
