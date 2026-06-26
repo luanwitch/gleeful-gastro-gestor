@@ -12,6 +12,7 @@ export interface Product {
   min_stock: number;
   active: boolean;
   created_at: string;
+  uses_recipe: boolean;
 }
 
 export interface SaleItem {

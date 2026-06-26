@@ -1,12 +1,8 @@
+import { useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
+import { toast } from "sonner";
 
-/**
- * Tipagem do ingrediente retornado pela API:
- * GET /api/ingredients/
- *
- * Esse type representa cada item da lista de ingredientes.
- */
 type Ingredient = {
   id: number;
   name: string;
@@ -17,14 +13,6 @@ type Ingredient = {
   active: boolean;
 };
 
-/**
- * Tipagem da movimentação de estoque retornada pela API:
- * GET /api/stock-movements/
- *
- * movement_type:
- * - "in"  = entrada de estoque
- * - "out" = saída de estoque
- */
 type StockMovement = {
   id: number;
   ingredient_name: string;
@@ -35,33 +23,73 @@ type StockMovement = {
 };
 
 export function Inventory() {
-  /**
-   * Consulta os ingredientes cadastrados.
-   *
-   * useQuery<Ingredient[]> informa ao TypeScript que essa query
-   * retorna uma lista de ingredientes.
-   */
- const { data: ingredients = [], isLoading } = useQuery<Ingredient[]>({
-  queryKey: ["ingredients"],
-  queryFn: async () => {
-    const response = await api.get("/ingredients/");
-    return response.data;
-  },
-});
+  const [name, setName] = useState("");
+  const [unit, setUnit] = useState("kg");
+  const [currentStock, setCurrentStock] = useState("0");
+  const [minimumStock, setMinimumStock] = useState("0");
+  const [costPerUnit, setCostPerUnit] = useState("0");
+  const [saving, setSaving] = useState(false);
 
-  /**
-   * Consulta o histórico de movimentações do estoque.
-   *
-   * useQuery<StockMovement[]> informa ao TypeScript que essa query
-   * retorna uma lista de movimentações.
-   */
-  const { data: movements = [] } = useQuery<StockMovement[]>({
+  const {
+    data: ingredients = [],
+    isLoading,
+    refetch: refetchIngredients,
+  } = useQuery<Ingredient[]>({
+    queryKey: ["ingredients"],
+    queryFn: async () => {
+      const response = await api.get("/ingredients/");
+      return response.data;
+    },
+  });
+
+  const {
+    data: movements = [],
+    refetch: refetchMovements,
+  } = useQuery<StockMovement[]>({
     queryKey: ["stock-movements"],
     queryFn: async () => {
       const response = await api.get("/stock-movements/");
       return response.data;
     },
   });
+
+  async function handleCreateIngredient(e: FormEvent) {
+    e.preventDefault();
+
+    if (!name.trim()) {
+      toast.error("Informe o nome do ingrediente.");
+      return;
+    }
+
+    try {
+      setSaving(true);
+
+      await api.post("/ingredients/", {
+        name,
+        unit,
+        current_stock: currentStock,
+        minimum_stock: minimumStock,
+        cost_per_unit: costPerUnit,
+        active: true,
+      });
+
+      toast.success("Ingrediente cadastrado com sucesso!");
+
+      setName("");
+      setUnit("kg");
+      setCurrentStock("0");
+      setMinimumStock("0");
+      setCostPerUnit("0");
+
+      await refetchIngredients();
+      await refetchMovements();
+    } catch (error: any) {
+      console.error(error?.response?.data);
+      toast.error("Não foi possível cadastrar o ingrediente.");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   if (isLoading) {
     return <p>Carregando estoque...</p>;
@@ -76,8 +104,87 @@ export function Inventory() {
         </p>
       </div>
 
-      {/* Tabela de ingredientes */}
-      <div className="rounded-lg border overflow-hidden">
+      <div className="rounded-lg border bg-white p-5">
+        <h2 className="text-lg font-semibold mb-4">Novo ingrediente</h2>
+
+        <form
+          onSubmit={handleCreateIngredient}
+          className="grid grid-cols-1 md:grid-cols-6 gap-3"
+        >
+          <div className="md:col-span-2">
+            <label className="text-sm font-medium">Nome</label>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ex: carne"
+              className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Unidade</label>
+            <select
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
+              className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
+            >
+              <option value="kg">kg</option>
+              <option value="g">g</option>
+              <option value="l">l</option>
+              <option value="ml">ml</option>
+              <option value="un">un</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Estoque</label>
+            <input
+              type="number"
+              step="0.001"
+              min="0"
+              value={currentStock}
+              onChange={(e) => setCurrentStock(e.target.value)}
+              className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Mínimo</label>
+            <input
+              type="number"
+              step="0.001"
+              min="0"
+              value={minimumStock}
+              onChange={(e) => setMinimumStock(e.target.value)}
+              className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Custo unit.</label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              value={costPerUnit}
+              onChange={(e) => setCostPerUnit(e.target.value)}
+              className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+          </div>
+
+          <div className="md:col-span-6">
+            <button
+              type="submit"
+              disabled={saving}
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
+            >
+              {saving ? "Salvando..." : "Cadastrar ingrediente"}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div className="rounded-lg border overflow-hidden bg-white">
         <table className="w-full text-sm">
           <thead className="bg-muted">
             <tr>
@@ -107,9 +214,10 @@ export function Inventory() {
                     {ingredient.minimum_stock} {ingredient.unit}
                   </td>
 
-                    <td className="p-3">
-                      R$ {Number(ingredient.cost_per_unit).toFixed(2)} / {ingredient.unit}
-                    </td>
+                  <td className="p-3">
+                    R$ {Number(ingredient.cost_per_unit).toFixed(2)} /{" "}
+                    {ingredient.unit}
+                  </td>
 
                   <td className="p-3">
                     {isLowStock ? (
@@ -129,11 +237,10 @@ export function Inventory() {
         </table>
       </div>
 
-      {/* Tabela de movimentações */}
       <div>
         <h2 className="text-xl font-bold mb-4">Últimas movimentações</h2>
 
-        <div className="rounded-lg border overflow-hidden">
+        <div className="rounded-lg border overflow-hidden bg-white">
           <table className="w-full text-sm">
             <thead className="bg-muted">
               <tr>
@@ -142,7 +249,6 @@ export function Inventory() {
                 <th className="p-3 text-left">Ingrediente</th>
                 <th className="p-3 text-left">Quantidade</th>
                 <th className="p-3 text-left">Observação</th>
-                <th className="p-3 text-left">Status</th>
               </tr>
             </thead>
 
@@ -150,24 +256,24 @@ export function Inventory() {
               {movements.map((movement) => (
                 <tr key={movement.id} className="border-t">
                   <td className="p-3">
-                    {new Date(movement.created_at).toLocaleString()}
+                    {new Date(movement.created_at).toLocaleString("pt-BR")}
                   </td>
 
-                  {movement.movement_type === "in" ? (
+                  <td className="p-3">
+                    {movement.movement_type === "in" ? (
                       <span className="font-semibold text-green-600">
-                          🟢 Entrada
+                        🟢 Entrada
                       </span>
-                  ) : (
+                    ) : (
                       <span className="font-semibold text-red-600">
-                          🔴 Saída
+                        🔴 Saída
                       </span>
-                  )}
-                  
+                    )}
+                  </td>
+
                   <td className="p-3">{movement.ingredient_name}</td>
-
                   <td className="p-3">{movement.quantity}</td>
-
-                  <td className="p-3">{movement.notes}</td>
+                  <td className="p-3">{movement.notes || "-"}</td>
                 </tr>
               ))}
             </tbody>

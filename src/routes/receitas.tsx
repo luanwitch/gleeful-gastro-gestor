@@ -121,12 +121,17 @@ function RecipesPage() {
     } catch (error: any) {
       console.error(error?.response?.data);
 
+      const data = (error as any)?.response?.data;
+
       const message =
-        error?.response?.data?.error ||
-        error?.response?.data?.detail ||
-        "Não foi possível cadastrar a receita.";
+        data?.error ||
+        data?.detail ||
+        JSON.stringify(data) ||
+        "Não foi possível registrar a venda.";
 
       toast.error(message);
+      console.log(data);
+      console.error(error);
     } finally {
       setSaving(false);
     }

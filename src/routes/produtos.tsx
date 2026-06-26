@@ -12,6 +12,7 @@ export const Route = createFileRoute("/produtos")({
   component: ProductsPage,
 });
 
+//Estados: 
 function ProductsPage() {
   const navigate = useNavigate();
 
@@ -24,6 +25,7 @@ function ProductsPage() {
   const [stockQuantity, setStockQuantity] = useState("0");
   const [minStock, setMinStock] = useState("5");
   const [active, setActive] = useState(true);
+  const [usesRecipe, setUsesRecipe] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -31,6 +33,7 @@ function ProductsPage() {
   const [stockProduct, setStockProduct] = useState<Product | null>(null);
   const [stockAmount, setStockAmount] = useState("")
   const [addingStock, setAddingStock] = useState(false);
+
 
   useEffect(() => {
     async function checkPermission() {
@@ -76,12 +79,15 @@ function ProductsPage() {
     return () => clearTimeout(timeout);
   }, [search]);
 
+
+  //Reset Form: 
   function resetForm() {
     setName("");
     setPrice("");
     setStockQuantity("0");
     setMinStock("5");
     setActive(true);
+    setUsesRecipe(false);
     setEditingProduct(null);
     setFormError(null);
   }
@@ -93,6 +99,7 @@ function ProductsPage() {
     setStockQuantity(String(product.stock_quantity));
     setMinStock(String(product.min_stock));
     setActive(product.active);
+    setUsesRecipe(product.uses_recipe);
     setFormError(null);
 
     window.scrollTo({
@@ -112,6 +119,7 @@ function ProductsPage() {
       stock_quantity: Number(stockQuantity),
       min_stock: Number(minStock),
       active,
+      uses_recipe: usesRecipe,
       category: null,
     };
 
@@ -243,6 +251,16 @@ function ProductsPage() {
                 className="h-4 w-4 rounded"
               />
               Produto ativo
+            </label>
+            
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={usesRecipe}
+                onChange={(e) => setUsesRecipe(e.target.checked)}
+                className="h-4 w-4 rounded"
+              />
+              Utiliza receita
             </label>
 
             {formError && <ErrorBox message={formError} />}
