@@ -95,6 +95,28 @@ export function Inventory() {
     return <p>Carregando estoque...</p>;
   }
 
+  async function handleDeleteIngredient(id: number) {
+  const confirmed = confirm("Deseja realmente excluir este ingrediente?");
+
+  if (!confirmed) return;
+
+  try {
+    await api.delete(`/ingredients/${id}/`);
+
+    toast.success("Ingrediente excluído com sucesso!");
+
+    await refetchIngredients();
+    await refetchMovements();
+  } catch (error: any) {
+    console.error(error?.response?.data);
+
+    toast.error(
+      error?.response?.data?.detail ||
+        "Não foi possível excluir este ingrediente."
+    );
+  }
+}
+
   return (
     <div className="p-6 space-y-6">
       <div>
@@ -120,6 +142,8 @@ export function Inventory() {
               className="mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm"
             />
           </div>
+
+
 
           <div>
             <label className="text-sm font-medium">Unidade</label>
@@ -193,6 +217,7 @@ export function Inventory() {
               <th className="p-3 text-left">Estoque mínimo</th>
               <th className="p-3 text-left">Custo unitário</th>
               <th className="p-3 text-left">Status</th>
+              <th className="p-3 text-left">Ações</th>
             </tr>
           </thead>
 
@@ -229,6 +254,15 @@ export function Inventory() {
                         ✅ OK
                       </span>
                     )}
+                  </td>
+                  <td className="p-3">
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteIngredient(ingredient.id)}
+                      className="rounded-lg bg-red-600 px-3 py-1 text-xs font-medium text-white hover:bg-red-700"
+                    >
+                      🗑️ Excluir
+                    </button>
                   </td>
                 </tr>
               );
