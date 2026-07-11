@@ -9,235 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VendasRouteImport } from './routes/vendas'
-import { Route as StockMovementsRouteImport } from './routes/stock-movements'
-import { Route as ReceitasRouteImport } from './routes/receitas'
-import { Route as ProdutosRouteImport } from './routes/produtos'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as InventoryRouteImport } from './routes/inventory'
-import { Route as FornecedoresRouteImport } from './routes/fornecedores'
-import { Route as DespesasRouteImport } from './routes/despesas'
-import { Route as ClientesRouteImport } from './routes/clientes'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ReportsSalesRouteImport } from './routes/reports.sales'
 
-const VendasRoute = VendasRouteImport.update({
-  id: '/vendas',
-  path: '/vendas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StockMovementsRoute = StockMovementsRouteImport.update({
-  id: '/stock-movements',
-  path: '/stock-movements',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReceitasRoute = ReceitasRouteImport.update({
-  id: '/receitas',
-  path: '/receitas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProdutosRoute = ProdutosRouteImport.update({
-  id: '/produtos',
-  path: '/produtos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InventoryRoute = InventoryRouteImport.update({
-  id: '/inventory',
-  path: '/inventory',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FornecedoresRoute = FornecedoresRouteImport.update({
-  id: '/fornecedores',
-  path: '/fornecedores',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DespesasRoute = DespesasRouteImport.update({
-  id: '/despesas',
-  path: '/despesas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClientesRoute = ClientesRouteImport.update({
-  id: '/clientes',
-  path: '/clientes',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReportsSalesRoute = ReportsSalesRouteImport.update({
-  id: '/reports/sales',
-  path: '/reports/sales',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/clientes': typeof ClientesRoute
-  '/despesas': typeof DespesasRoute
-  '/fornecedores': typeof FornecedoresRoute
-  '/inventory': typeof InventoryRoute
-  '/login': typeof LoginRoute
-  '/produtos': typeof ProdutosRoute
-  '/receitas': typeof ReceitasRoute
-  '/stock-movements': typeof StockMovementsRoute
-  '/vendas': typeof VendasRoute
-  '/reports/sales': typeof ReportsSalesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/clientes': typeof ClientesRoute
-  '/despesas': typeof DespesasRoute
-  '/fornecedores': typeof FornecedoresRoute
-  '/inventory': typeof InventoryRoute
-  '/login': typeof LoginRoute
-  '/produtos': typeof ProdutosRoute
-  '/receitas': typeof ReceitasRoute
-  '/stock-movements': typeof StockMovementsRoute
-  '/vendas': typeof VendasRoute
-  '/reports/sales': typeof ReportsSalesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/clientes': typeof ClientesRoute
-  '/despesas': typeof DespesasRoute
-  '/fornecedores': typeof FornecedoresRoute
-  '/inventory': typeof InventoryRoute
-  '/login': typeof LoginRoute
-  '/produtos': typeof ProdutosRoute
-  '/receitas': typeof ReceitasRoute
-  '/stock-movements': typeof StockMovementsRoute
-  '/vendas': typeof VendasRoute
-  '/reports/sales': typeof ReportsSalesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/clientes'
-    | '/despesas'
-    | '/fornecedores'
-    | '/inventory'
-    | '/login'
-    | '/produtos'
-    | '/receitas'
-    | '/stock-movements'
-    | '/vendas'
-    | '/reports/sales'
+  fullPaths: '/'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/clientes'
-    | '/despesas'
-    | '/fornecedores'
-    | '/inventory'
-    | '/login'
-    | '/produtos'
-    | '/receitas'
-    | '/stock-movements'
-    | '/vendas'
-    | '/reports/sales'
-  id:
-    | '__root__'
-    | '/'
-    | '/clientes'
-    | '/despesas'
-    | '/fornecedores'
-    | '/inventory'
-    | '/login'
-    | '/produtos'
-    | '/receitas'
-    | '/stock-movements'
-    | '/vendas'
-    | '/reports/sales'
+  to: '/'
+  id: '__root__' | '/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ClientesRoute: typeof ClientesRoute
-  DespesasRoute: typeof DespesasRoute
-  FornecedoresRoute: typeof FornecedoresRoute
-  InventoryRoute: typeof InventoryRoute
-  LoginRoute: typeof LoginRoute
-  ProdutosRoute: typeof ProdutosRoute
-  ReceitasRoute: typeof ReceitasRoute
-  StockMovementsRoute: typeof StockMovementsRoute
-  VendasRoute: typeof VendasRoute
-  ReportsSalesRoute: typeof ReportsSalesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/vendas': {
-      id: '/vendas'
-      path: '/vendas'
-      fullPath: '/vendas'
-      preLoaderRoute: typeof VendasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/stock-movements': {
-      id: '/stock-movements'
-      path: '/stock-movements'
-      fullPath: '/stock-movements'
-      preLoaderRoute: typeof StockMovementsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/receitas': {
-      id: '/receitas'
-      path: '/receitas'
-      fullPath: '/receitas'
-      preLoaderRoute: typeof ReceitasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/produtos': {
-      id: '/produtos'
-      path: '/produtos'
-      fullPath: '/produtos'
-      preLoaderRoute: typeof ProdutosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/inventory': {
-      id: '/inventory'
-      path: '/inventory'
-      fullPath: '/inventory'
-      preLoaderRoute: typeof InventoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/fornecedores': {
-      id: '/fornecedores'
-      path: '/fornecedores'
-      fullPath: '/fornecedores'
-      preLoaderRoute: typeof FornecedoresRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/despesas': {
-      id: '/despesas'
-      path: '/despesas'
-      fullPath: '/despesas'
-      preLoaderRoute: typeof DespesasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/clientes': {
-      id: '/clientes'
-      path: '/clientes'
-      fullPath: '/clientes'
-      preLoaderRoute: typeof ClientesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -245,28 +48,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reports/sales': {
-      id: '/reports/sales'
-      path: '/reports/sales'
-      fullPath: '/reports/sales'
-      preLoaderRoute: typeof ReportsSalesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ClientesRoute: ClientesRoute,
-  DespesasRoute: DespesasRoute,
-  FornecedoresRoute: FornecedoresRoute,
-  InventoryRoute: InventoryRoute,
-  LoginRoute: LoginRoute,
-  ProdutosRoute: ProdutosRoute,
-  ReceitasRoute: ReceitasRoute,
-  StockMovementsRoute: StockMovementsRoute,
-  VendasRoute: VendasRoute,
-  ReportsSalesRoute: ReportsSalesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -9,28 +9,22 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
-import { Sidebar } from "@/components/Sidebar";
-import { MobileNav } from "@/components/MobileNav";
 import { Toaster } from "sonner";
-
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+          Página não encontrada.
         </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
-        </div>
+        <Link
+          to="/"
+          className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+        >
+          Voltar ao início
+        </Link>
       </div>
     </div>
   );
@@ -39,33 +33,19 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Try again
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Go home
-          </a>
-        </div>
+        <h1 className="text-xl font-semibold">Algo deu errado</h1>
+        <button
+          onClick={() => {
+            router.invalidate();
+            reset();
+          }}
+          className="mt-6 rounded-full bg-primary px-5 py-2.5 text-sm text-primary-foreground"
+        >
+          Tentar novamente
+        </button>
       </div>
     </div>
   );
@@ -76,21 +56,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Gestão de Restaurante" },
-      { name: "description", content: "Sistema MVP de gestão de restaurante" },
-      { name: "author", content: "Luan" },
-      { property: "og:title", content: "Gestão de Restaurante" },
-      { property: "og:description", content: "Sistema de Gestão para Restaurantes" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@luanvlw23" },
-    ],
-    links: [
+      { title: "Psicoterapia com Acolhimento — Ana Martins" },
       {
-        rel: "stylesheet",
-        href: appCss,
+        name: "description",
+        content:
+          "Atendimento psicológico humanizado, online e presencial. Ansiedade, autoestima, relacionamentos e desenvolvimento pessoal. Agende sua consulta.",
       },
+      { property: "og:title", content: "Psicoterapia com Acolhimento — Ana Martins" },
+      {
+        property: "og:description",
+        content:
+          "Um espaço seguro para cuidar da sua saúde emocional. Atendimento online e presencial.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -100,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR" className="scroll-smooth">
       <head>
         <HeadContent />
       </head>
@@ -114,20 +95,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-
   return (
-  <QueryClientProvider client={queryClient}>
-    <div className="flex min-h-screen bg-muted/30">
-      <Sidebar />
-
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8 overflow-x-hidden">
-        <Outlet />
-      </main>
-
-      <MobileNav />
-    </div>
-
-    <Toaster richColors position="top-right" />
-  </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+      <Toaster richColors position="top-right" />
+    </QueryClientProvider>
   );
 }
