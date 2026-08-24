@@ -1,0 +1,5 @@
+# [PREENCHER: substituir SEU-DOMINIO pelo domínio real em produção]
+User-agent: *
+Allow: /
+
+Sitemap: https://SEU-DOMINIO.com.br/sitemap.xml
