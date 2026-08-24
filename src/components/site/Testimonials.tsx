@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Quote, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Quote } from "lucide-react";
 import { isPlaceholder, testimonials } from "@/config/site";
-import { Accent, Kicker, Section, Title } from "./shared";
+import { Accent, Kicker, MotionDiv, Section, Title } from "./shared";
 
 function initials(name: string): string {
   if (isPlaceholder(name)) return "";
@@ -13,96 +13,143 @@ function initials(name: string): string {
     .join("");
 }
 
+/**
+ * Carrossel editorial de depoimentos — um relato por vez, tipografia grande,
+ * controles discretos e anúncio acessível das trocas (aria-live).
+ * Suporta 3–5 depoimentos definidos em src/config/site.ts.
+ */
 export function Testimonials() {
+  const total = testimonials.length;
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
 
-  useEffect(() => {
-    if (paused || testimonials.length < 2) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % testimonials.length), 6000);
-    return () => clearInterval(id);
-  }, [paused]);
+  const prev = useCallback(() => setIndex((i) => (i - 1 + total) % total), [total]);
+  const next = useCallback(() => setIndex((i) => (i + 1) % total), [total]);
 
-  const t = testimonials[index];
-  const avatarLetters = initials(t.name);
+  const current = testimonials[index];
+  const placeholderText = isPlaceholder(current.text);
+  const letters = initials(current.name);
 
   return (
-    <Section id="depoimentos">
-      <div className="mx-auto max-w-2xl text-center">
-        <Kicker>Depoimentos</Kicker>
-        <Title center>
-          Palavras de quem <Accent>confiou</Accent> no processo
+    <Section id="depoimentos" tone="mist" className="border-t border-earth/10">
+      <div className="max-w-2xl">
+        <Kicker>05 · Depoimentos</Kicker>
+        <Title>
+          Experiências em <Accent>primeira pessoa</Accent>
         </Title>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Depoimentos publicados com autorização. Por sigilo ético, identidades preservadas.
+        <p className="mt-6 max-w-xl text-sm leading-relaxed text-earth/60">
+          Espaço reservado para relatos reais, publicados somente com autorização expressa. Por
+          sigilo ético, as identidades são sempre preservadas.
         </p>
       </div>
 
-      <div
-        className="relative mx-auto mt-12 max-w-2xl"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onFocusCapture={() => setPaused(true)}
-        onBlurCapture={() => setPaused(false)}
-      >
-        <div
-          aria-live="polite"
-          className="min-h-[260px] overflow-hidden rounded-3xl bg-gradient-to-br from-olive-soft/70 to-sand p-8 shadow-lg ring-1 ring-earth/5 sm:p-12"
-        >
-          <AnimatePresence mode="wait">
-            <motion.figure
-              key={index}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.4 }}
-              className="flex flex-col items-center text-center"
-            >
-              {avatarLetters ? (
-                <span
-                  aria-hidden="true"
-                  className="grid h-14 w-14 place-items-center rounded-full bg-primary font-display text-lg font-semibold text-primary-foreground"
+      <MotionDiv className="mt-16">
+        {/* palco do depoimento */}
+        <div className="relative mx-auto max-w-3xl">
+          <span
+            aria-hidden="true"
+            className="absolute -top-14 left-0 font-display text-[7rem] leading-none text-olive/40 select-none sm:-top-20 sm:text-[9rem]"
+          >
+            &ldquo;
+          </span>
+
+          <div aria-live="polite" className="relative min-h-[16rem] sm:min-h-[13rem]">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.figure
+                key={index}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                className="pt-10 sm:pt-12"
+              >
+                <blockquote
+                  className={`font-display text-[clamp(1.55rem,3vw,2.3rem)] leading-[1.45] tracking-[-0.015em] ${
+                    placeholderText ? "text-destructive/85 italic" : "text-earth/90"
+                  }`}
                 >
-                  {avatarLetters}
-                </span>
-              ) : (
-                <span
-                  aria-hidden="true"
-                  className="grid h-14 w-14 place-items-center rounded-full bg-primary/15 text-primary"
-                >
-                  <Quote className="h-6 w-6" />
-                </span>
-              )}
-              <div className="mt-5 flex justify-center gap-1 text-primary" aria-hidden="true">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4" fill="currentColor" />
-                ))}
-              </div>
-              <blockquote className="mt-5 font-display text-xl leading-relaxed sm:text-2xl">
-                “{t.text}”
-              </blockquote>
-              <figcaption className="mt-6 text-sm font-medium text-muted-foreground">
-                {isPlaceholder(t.name) ? "[PREENCHER: iniciais da paciente]" : <>— {t.name}</>}
-              </figcaption>
-            </motion.figure>
-          </AnimatePresence>
+                  {current.text}
+                </blockquote>
+                <figcaption className="mt-8 flex items-center gap-4 border-t border-earth/10 pt-7">
+                  <span
+                    aria-hidden="true"
+                    className={`grid h-12 w-12 place-items-center rounded-full font-display text-sm ${
+                      letters
+                        ? "bg-olive-deep text-cream"
+                        : "bg-paper text-olive-deep ring-1 ring-earth/15"
+                    }`}
+                  >
+                    {letters || <Quote className="h-4 w-4" strokeWidth={1.5} />}
+                  </span>
+                  <span>
+                    <span
+                      className={`block text-sm font-semibold ${
+                        isPlaceholder(current.name) ? "text-destructive" : ""
+                      }`}
+                    >
+                      {isPlaceholder(current.name)
+                        ? "[PREENCHER: iniciais da paciente]"
+                        : current.name}
+                    </span>
+                    {current.role ? (
+                      <span className="mt-0.5 block text-xs text-earth/55">{current.role}</span>
+                    ) : null}
+                  </span>
+                </figcaption>
+              </motion.figure>
+            </AnimatePresence>
+          </div>
         </div>
 
-        <div className="mt-6 flex justify-center gap-2">
-          {testimonials.map((item, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-current={i === index ? "true" : undefined}
-              aria-label={`Mostrar depoimento ${i + 1} de ${testimonials.length}`}
-              onClick={() => setIndex(i)}
-              className={`h-2.5 rounded-full transition-all ${
-                i === index ? "w-7 bg-primary" : "w-2.5 bg-border hover:bg-primary/50"
-              }`}
-            />
-          ))}
+        {/* controles discretos — contador editorial + setas */}
+        <div
+          className="mt-12 flex items-center justify-center gap-6"
+          role="group"
+          aria-label="Navegar entre depoimentos"
+          onKeyDown={(e) => {
+            if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              prev();
+            }
+            if (e.key === "ArrowRight") {
+              e.preventDefault();
+              next();
+            }
+          }}
+        >
+          <button
+            type="button"
+            onClick={prev}
+            aria-label="Depoimento anterior"
+            className="grid h-11 w-11 place-items-center rounded-full border border-earth/20 text-earth/60 transition-all duration-300 hover:border-olive-deep hover:bg-olive-deep hover:text-cream focus-visible:border-olive-deep"
+          >
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          </button>
+
+          <p
+            aria-hidden="true"
+            className="font-display text-sm tabular-nums tracking-[0.2em] text-earth/50"
+          >
+            {String(index + 1).padStart(2, "0")}
+            <span className="mx-1.5 text-earth/30">/</span>
+            {String(total).padStart(2, "0")}
+          </p>
+
+          <button
+            type="button"
+            onClick={next}
+            aria-label="Próximo depoimento"
+            className="grid h-11 w-11 place-items-center rounded-full border border-earth/20 text-earth/60 transition-all duration-300 hover:border-olive-deep hover:bg-olive-deep hover:text-cream focus-visible:border-olive-deep"
+          >
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </button>
         </div>
-      </div>
+      </MotionDiv>
+
+      <p className="mx-auto mt-14 max-w-xl text-center text-xs leading-relaxed text-earth/50">
+        Estrutura preparada para 3–5 depoimentos. Substituir os marcadores em{" "}
+        <code className="rounded bg-paper px-1.5 py-0.5">src/config/site.ts</code> antes de
+        publicar.
+      </p>
     </Section>
   );
 }

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, MessageCircle } from "lucide-react";
-import { whatsappUrl } from "@/config/site";
+import { whatsappReady, whatsappUrl } from "@/config/site";
 import { Accent, Kicker, Section, Title } from "./shared";
 
 const faqs = [
@@ -11,15 +10,15 @@ const faqs = [
   },
   {
     q: "Quanto tempo dura uma sessão?",
-    a: "As sessões duram em média 50 minutos, geralmente com frequência semanal. A periodicidade pode ser ajustada juntos conforme a sua rotina e as suas necessidades.",
+    a: "[PREENCHER: informar duração da sessão — ex.: 50 minutos — e frequência recomendada (semanal, quinzenal). Revisar com a profissional antes de publicar.]",
   },
   {
-    q: "Você atende online?",
-    a: "Sim! O atendimento online é feito por videochamada, com a mesma ética, cuidado e sigilo do atendimento presencial. Basta um espaço tranquilo e uma conexão com internet.",
+    q: "O atendimento pode ser online?",
+    a: "Sim. O atendimento online é feito por videochamada, com a mesma ética, cuidado e sigilo do presencial. Basta um espaço tranquilo e conexão com internet.",
   },
   {
     q: "Como faço para agendar?",
-    a: "É simples: preencha o formulário aqui do site ou mande uma mensagem no WhatsApp. Vou responder o quanto antes para combinarmos o melhor dia e horário.",
+    a: "É simples: preencha o formulário na seção de agendamento ou envie uma mensagem direta. Vou responder pessoalmente para combinarmos o melhor dia e horário.",
   },
   {
     q: "Qual o valor da consulta?",
@@ -31,73 +30,107 @@ export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <Section id="faq" tone="soft">
-      <div className="grid gap-10 md:grid-cols-[1fr_1.4fr]">
-        <div>
-          <Kicker>Dúvidas</Kicker>
-          <Title>
-            Perguntas <Accent>frequentes</Accent>
-          </Title>
-          <p className="mt-4 leading-relaxed text-muted-foreground">
-            Não encontrou sua dúvida? Me chame no WhatsApp — respondo pessoalmente.
-          </p>
-          <a
-            href={whatsappUrl("Olá! Tenho uma dúvida sobre o acompanhamento terapêutico.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 rounded-full border border-primary/40 px-5 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-primary-foreground"
-          >
-            <MessageCircle className="h-4 w-4" /> Tirar dúvidas
-          </a>
+    <Section id="faq" tone="cream" className="border-t border-earth/10">
+      <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
+        <div className="lg:col-span-4">
+          <div className="lg:sticky lg:top-28">
+            <Kicker>06 · Dúvidas</Kicker>
+            <Title>
+              Perguntas <Accent>frequentes</Accent>
+            </Title>
+            <p className="mt-6 max-w-xs leading-relaxed text-earth/70">
+              Não encontrou o que procurava? Me chame — respondo pessoalmente.
+            </p>
+            <a
+              href={
+                whatsappReady
+                  ? whatsappUrl("Olá! Tenho uma dúvida sobre o acompanhamento terapêutico.")
+                  : "#agendamento"
+              }
+              {...(whatsappReady ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              className="link-line group mt-8"
+            >
+              Tirar dúvidas
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </a>
+          </div>
         </div>
 
-        <div className="space-y-3">
-          {faqs.map((f, i) => {
-            const isOpen = open === i;
-            return (
-              <div
-                key={f.q}
-                className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm"
-              >
-                <h3>
-                  <button
-                    type="button"
-                    onClick={() => setOpen(isOpen ? null : i)}
-                    aria-expanded={isOpen}
-                    aria-controls={`faq-panel-${i}`}
-                    id={`faq-button-${i}`}
-                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-medium"
-                  >
-                    <span>{f.q}</span>
-                    <ChevronDown
-                      aria-hidden="true"
-                      className={`h-5 w-5 shrink-0 text-primary transition-transform duration-300 ${
-                        isOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-                </h3>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      id={`faq-panel-${i}`}
-                      role="region"
-                      aria-labelledby={`faq-button-${i}`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="overflow-hidden"
+        {/* lista editorial indexada */}
+        <div className="lg:col-span-8">
+          <div className="border-t border-earth/10">
+            {faqs.map((f, i) => {
+              const isOpen = open === i;
+              return (
+                <div key={f.q} className="border-b border-earth/10">
+                  <h3>
+                    <button
+                      type="button"
+                      onClick={() => setOpen(isOpen ? null : i)}
+                      aria-expanded={isOpen}
+                      aria-controls={`faq-panel-${i}`}
+                      id={`faq-button-${i}`}
+                      className="group grid w-full grid-cols-[2.25rem_1fr_auto] items-baseline gap-x-5 py-7 text-left sm:grid-cols-[3rem_1fr_auto] sm:gap-x-8"
                     >
-                      <p className="px-5 pb-5 text-sm leading-relaxed text-muted-foreground">
-                        {f.a}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
+                      <span
+                        aria-hidden="true"
+                        className={`font-display text-xs tabular-nums transition-colors duration-300 ${
+                          isOpen
+                            ? "text-olive-deep"
+                            : "text-earth/40 group-hover:text-olive-deep/70"
+                        }`}
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span
+                        className={`font-display text-[1.25rem] leading-snug tracking-[-0.01em] transition-colors duration-300 sm:text-[1.45rem] ${
+                          isOpen ? "text-olive-deep" : "group-hover:text-earth/75"
+                        }`}
+                      >
+                        {f.q}
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        className={`justify-self-end font-display text-[1.6rem] leading-none transition-transform duration-300 ${
+                          isOpen
+                            ? "rotate-45 text-olive-deep"
+                            : "text-earth/35 group-hover:text-earth/60"
+                        }`}
+                      >
+                        +
+                      </span>
+                    </button>
+                  </h3>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        id={`faq-panel-${i}`}
+                        role="region"
+                        aria-labelledby={`faq-button-${i}`}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.32, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="grid grid-cols-[2.25rem_1fr] gap-x-5 pb-8 sm:grid-cols-[3rem_1fr] sm:gap-x-8">
+                          <span aria-hidden="true" />
+                          <p className="max-w-2xl text-[15px] leading-relaxed text-earth/70">
+                            {f.a}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </Section>

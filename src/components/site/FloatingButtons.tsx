@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUp, MessageCircle } from "lucide-react";
-import { whatsappUrl } from "@/config/site";
+import { whatsappReady, whatsappUrl } from "@/config/site";
 
 export function FloatingButtons() {
   const [showTop, setShowTop] = useState(false);
@@ -15,15 +15,17 @@ export function FloatingButtons() {
 
   return (
     <>
-      <a
-        href={whatsappUrl()}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Conversar no WhatsApp"
-        className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-whatsapp text-white shadow-xl transition-transform hover:scale-110"
-      >
-        <MessageCircle className="h-6 w-6" />
-      </a>
+      {whatsappReady && (
+        <a
+          href={whatsappUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Conversar no WhatsApp"
+          className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-whatsapp text-white shadow-xl transition-transform hover:scale-110"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </a>
+      )}
 
       <AnimatePresence>
         {showTop && (
@@ -34,7 +36,7 @@ export function FloatingButtons() {
             exit={{ opacity: 0, y: 10 }}
             aria-label="Voltar ao topo"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="fixed bottom-24 right-5 z-40 grid h-11 w-11 place-items-center rounded-full bg-card text-primary shadow-lg ring-1 ring-earth/10 transition hover:-translate-y-0.5"
+            className="fixed bottom-24 right-5 z-40 grid h-11 w-11 place-items-center rounded-full bg-paper text-earth shadow-lg ring-1 ring-earth/15 transition hover:-translate-y-0.5 hover:bg-cream"
           >
             <ArrowUp className="h-5 w-5" />
           </motion.button>

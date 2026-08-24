@@ -40,7 +40,9 @@ export const site = {
   url: "https://SEU-DOMINIO.com.br",
 
   seo: {
-    title: `${site.tagline} — ${site.name}`,
+    get title() {
+      return `${site.tagline} — ${site.name}`;
+    },
     description:
       "Atendimento psicológico humanizado, online e presencial. Ansiedade, autoestima, relacionamentos e desenvolvimento pessoal. Agende sua conversa inicial.",
   },
@@ -52,10 +54,23 @@ export function whatsappUrl(message?: string): string {
   return `https://wa.me/${site.contact.whatsappNumber}?text=${text}`;
 }
 
-/** Indica se um campo ainda está como placeholder ([PREENCHER: ...]). */
+/**
+ * Indica se um campo ainda está como placeholder. Cobre tanto os marcadores
+ * explícitos ([PREENCHER: ...]) quanto os valores-sentinelas de configuração
+ * (WhatsApp/domínio/Instagram fictícios) para que nunca vazem ao ar.
+ */
+const PLACEHOLDER_MARKERS = ["[PREENCHER", "SEUNUMERO", "SEU-DOMINIO", "handle.do.instagram"];
+
 export function isPlaceholder(value: string): boolean {
-  return value.includes("[PREENCHER");
+  return PLACEHOLDER_MARKERS.some((marker) => value.includes(marker));
 }
+
+/**
+ * Indica se o número de WhatsApp já foi configurado. Enquanto estiver como
+ * placeholder, os CTAs diretos devem cair no formulário de agendamento (#)
+ * em vez de abrir um link quebrado.
+ */
+export const whatsappReady = !isPlaceholder(site.contact.whatsappNumber);
 
 /**
  * Depoimentos — espaço para 3–5 relatos.

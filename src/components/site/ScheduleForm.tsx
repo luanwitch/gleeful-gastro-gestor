@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { CalendarHeart, MessageCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
-import { whatsappUrl } from "@/config/site";
-import { Accent, Kicker, MotionDiv, Section, Title } from "./shared";
+import { isPlaceholder, whatsappReady, whatsappUrl, site } from "@/config/site";
+import { Accent, Filler, Kicker, MotionDiv, Section } from "./shared";
 
 const modalidades = ["Online", "Presencial"] as const;
 const periodos = ["Manhã", "Tarde", "Noite", "Sem preferência"] as const;
@@ -14,10 +14,18 @@ export function ScheduleForm() {
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
 
+  const emailOk = !isPlaceholder(site.contact.email);
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!nome.trim()) {
       setErro("Por favor, informe seu nome.");
+      return;
+    }
+    if (!whatsappReady) {
+      toast.error(
+        "O número de WhatsApp ainda não foi configurado — preencha em src/config/site.ts.",
+      );
       return;
     }
     setErro("");
@@ -35,50 +43,76 @@ export function ScheduleForm() {
     toast.success("Abrindo o WhatsApp com seus dados…");
   }
 
-  const inputClass =
-    "w-full rounded-xl border border-input bg-card px-4 py-3 text-sm placeholder:text-muted-foreground/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
-
   return (
-    <Section id="agendamento">
-      <div className="grid gap-12 md:grid-cols-[1fr_1.1fr] md:items-center">
-        <MotionDiv>
-          <Kicker>Agendamento</Kicker>
-          <Title>
-            Dê o primeiro passo — é <Accent>simples</Accent>
-          </Title>
-          <p className="mt-5 max-w-md leading-relaxed text-muted-foreground">
-            Preencha ao lado e sua mensagem chega pronta no meu WhatsApp. Sem compromisso: é uma
-            conversa inicial para nos conhecermos e tirar suas dúvidas.
+    <Section id="agendamento" tone="deep" pad="py-28 sm:py-36">
+      <div className="grid gap-16 lg:grid-cols-12 lg:gap-14">
+        {/* Pitch de conversão — direto no fundo escuro */}
+        <div className="lg:col-span-5">
+          <Kicker light>07 · Agendamento</Kicker>
+          <h2 className="mt-6 font-display text-[clamp(2.35rem,4.6vw,3.75rem)] leading-[1.05] tracking-[-0.025em]">
+            Vamos <Accent light>conversar?</Accent>
+          </h2>
+          <p className="mt-7 max-w-md leading-relaxed text-cream/75">
+            Preencha o formulário e sua mensagem chega pronta no meu WhatsApp. Sem compromisso: é
+            uma conversa inicial para nos conhecermos e tirar suas dúvidas.
           </p>
-          <ul className="mt-8 space-y-3 text-sm text-muted-foreground">
+
+          <ul className="mt-9 space-y-3.5 text-sm text-cream/80">
             {[
               "Retorno pessoal o mais breve possível",
               "Conversa inicial sem compromisso",
               "Sigilo garantido desde o primeiro contato",
             ].map((item) => (
-              <li key={item} className="flex items-start gap-2.5">
-                <span
-                  aria-hidden="true"
-                  className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
-                />
+              <li key={item} className="flex items-start gap-3.5">
+                <span aria-hidden="true" className="mt-2 h-px w-5 shrink-0 bg-mist/60" />
                 {item}
               </li>
             ))}
           </ul>
-        </MotionDiv>
 
-        <MotionDiv delay={0.1}>
+          <div className="mt-11 space-y-3 border-t border-cream/15 pt-8 text-sm">
+            <p className="text-[11px] font-semibold tracking-[0.22em] text-cream/55 uppercase">
+              Outros canais
+            </p>
+            {whatsappReady ? (
+              <a
+                href={whatsappUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-cream/85 underline-offset-4 transition-colors hover:text-cream hover:underline"
+              >
+                WhatsApp — atendimento direto
+              </a>
+            ) : (
+              <p className="text-cream/85">
+                WhatsApp: <Filler>[PREENCHER: WhatsApp]</Filler>
+              </p>
+            )}
+            {emailOk ? (
+              <a
+                href={`mailto:${site.contact.email}`}
+                className="block break-all text-cream/85 underline-offset-4 transition-colors hover:text-cream hover:underline"
+              >
+                {site.contact.email}
+              </a>
+            ) : (
+              <p className="text-cream/85">
+                E-mail: <Filler>[PREENCHER: e-mail profissional]</Filler>
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Formulário — único objeto elevado da banda */}
+        <MotionDiv delay={0.1} className="lg:col-span-6 lg:col-start-7">
           <form
             onSubmit={handleSubmit}
             noValidate
-            className="rounded-3xl border border-border bg-card p-6 shadow-xl shadow-earth/10 sm:p-8"
+            className="rounded-[6px] bg-paper p-6 text-earth shadow-2xl shadow-black/30 sm:p-10"
           >
             <div>
-              <label htmlFor="ag-nome" className="mb-1.5 block text-sm font-semibold">
-                Seu nome{" "}
-                <span aria-hidden="true" className="text-destructive">
-                  *
-                </span>
+              <label htmlFor="ag-nome" className="field-label">
+                Seu nome <span aria-hidden="true">*</span>
               </label>
               <input
                 id="ag-nome"
@@ -91,28 +125,26 @@ export function ScheduleForm() {
                 placeholder="Como você gostaria de ser chamado(a)"
                 aria-invalid={!!erro}
                 aria-describedby={erro ? "ag-nome-erro" : undefined}
-                className={inputClass}
+                className="field-input"
               />
               {erro && (
                 <p
                   id="ag-nome-erro"
                   role="alert"
-                  className="mt-1.5 text-xs font-medium text-destructive"
+                  className="mt-2 text-xs font-medium text-destructive"
                 >
                   {erro}
                 </p>
               )}
             </div>
 
-            <fieldset className="mt-5">
-              <legend className="mb-1.5 text-sm font-semibold">Modalidade</legend>
-              <div className="flex gap-2">
+            <fieldset className="mt-8">
+              <legend className="field-label">Modalidade</legend>
+              <div className="grid grid-cols-2 gap-2">
                 {modalidades.map((m) => (
                   <label
                     key={m}
-                    className={`flex-1 cursor-pointer rounded-xl border px-4 py-2.5 text-center text-sm font-medium transition has-checked:border-primary has-checked:bg-primary has-checked:text-primary-foreground ${
-                      modalidade === m ? "" : "border-border bg-background hover:border-primary/50"
-                    }`}
+                    className={`chip text-center ${modalidade === m ? "chip-selected" : ""}`}
                   >
                     <input
                       type="radio"
@@ -128,16 +160,11 @@ export function ScheduleForm() {
               </div>
             </fieldset>
 
-            <fieldset className="mt-5">
-              <legend className="mb-1.5 text-sm font-semibold">Melhor período</legend>
+            <fieldset className="mt-8">
+              <legend className="field-label">Melhor horário</legend>
               <div className="flex flex-wrap gap-2">
                 {periodos.map((p) => (
-                  <label
-                    key={p}
-                    className={`cursor-pointer rounded-full border px-4 py-2 text-sm transition has-checked:border-primary has-checked:bg-primary has-checked:text-primary-foreground ${
-                      periodo === p ? "" : "border-border bg-background hover:border-primary/50"
-                    }`}
-                  >
+                  <label key={p} className={`chip ${periodo === p ? "chip-selected" : ""}`}>
                     <input
                       type="radio"
                       name="periodo"
@@ -152,9 +179,9 @@ export function ScheduleForm() {
               </div>
             </fieldset>
 
-            <div className="mt-5">
-              <label htmlFor="ag-msg" className="mb-1.5 block text-sm font-semibold">
-                Mensagem <span className="font-normal text-muted-foreground">(opcional)</span>
+            <div className="mt-8">
+              <label htmlFor="ag-msg" className="field-label">
+                Mensagem <span className="normal-case tracking-normal">(opcional)</span>
               </label>
               <textarea
                 id="ag-msg"
@@ -162,52 +189,24 @@ export function ScheduleForm() {
                 rows={3}
                 value={mensagem}
                 onChange={(e) => setMensagem(e.target.value)}
-                placeholder="Conte em poucas palavras o que você busca (não é obrigatório)"
-                className={`${inputClass} resize-none`}
+                placeholder="Conte em poucas palavras o que você busca"
+                className={`${"field-input"} resize-none`}
               />
             </div>
 
-            <button
-              type="submit"
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:shadow-primary/35"
-            >
-              <CalendarHeart className="h-4 w-4" />
+            <button type="submit" className="btn btn-primary group mt-9 w-full">
               Enviar pelo WhatsApp
+              <ArrowRight
+                aria-hidden="true"
+                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+              />
             </button>
-            <p className="mt-3 text-center text-xs text-muted-foreground">
+            <p className="mt-4 text-center text-xs text-earth/55">
               Ao enviar, o WhatsApp abrirá com sua mensagem já preenchida.
             </p>
           </form>
         </MotionDiv>
       </div>
     </Section>
-  );
-}
-
-export function FinalCta() {
-  return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary via-[#4c5840] to-earth" />
-      <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-24">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="font-display text-3xl leading-tight text-cream sm:text-4xl md:text-5xl"
-        >
-          Cuidar da mente também é um ato de <em className="italic">coragem</em>.
-        </motion.h2>
-        <p className="mx-auto mt-5 max-w-xl text-cream/85">
-          Comece hoje a sua jornada de autoconhecimento. Estou aqui para caminhar com você.
-        </p>
-        <a
-          href="#agendamento"
-          className="mt-8 inline-flex items-center gap-2 rounded-full bg-cream px-7 py-3.5 text-base font-semibold text-earth shadow-xl transition hover:-translate-y-0.5 hover:bg-white"
-        >
-          <MessageCircle className="h-5 w-5" /> Agendar conversa inicial
-        </a>
-      </div>
-    </section>
   );
 }

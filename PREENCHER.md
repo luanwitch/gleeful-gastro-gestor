@@ -3,6 +3,14 @@
 Todos os campos abaixo estão marcados no código com `[PREENCHER: ...]` ou
 centralizados em **`src/config/site.ts`**. Nada entra no ar com dado fictício.
 
+**Proteções automáticas**: enquanto os dados não forem preenchidos, o site
+detecta os placeholders (inclusive valores-sentinelas como `55SEUNUMERO`,
+`SEU-DOMINIO` e `handle.do.instagram`) e:
+- omite esses campos do schema.org (JSON-LD);
+- troca CTAs diretos de WhatsApp pelo formulário de agendamento;
+- esconde o botão flutuante de WhatsApp e exibe marcadores `[PREENCHER]`
+  no rodapé em vez de links quebrados.
+
 ## Dados obrigatórios (`src/config/site.ts`)
 
 | Campo                                        | Onde aparece                                | Status                                                                             |
@@ -23,7 +31,6 @@ centralizados em **`src/config/site.ts`**. Nada entra no ar com dado fictício.
 - [ ] **Abordagem terapêutica** — título + parágrafo descritivo (`credentials.approach*`)
 - [ ] **Formações complementares** — lista `credentials.extras`
 - [ ] **Depoimentos reais autorizados** — mínimo 3, usando iniciais por sigilo (`testimonials`)
-- [ ] **Números públicos na seção Sobre** — anos de experiência / pessoas atendidas (só publicar se quiser exibir)
 - [ ] **Fotos reais** (ver seção abaixo)
 - [ ] Textos de especialidades/benefícios — tom institucional revisado
 

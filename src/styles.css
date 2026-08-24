@@ -5,17 +5,19 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 10px);
+  --radius-3xl: calc(var(--radius) + 14px);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -30,19 +32,17 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
 
-  /* Paleta da marca */
+  /* Paleta da marca — identidade editorial */
+  --color-paper: var(--paper);
+  --color-cream: var(--cream);
+  --color-sand: var(--sand);
+  --color-mist: var(--mist);
   --color-olive: var(--olive);
   --color-olive-deep: var(--olive-deep);
   --color-olive-soft: var(--olive-soft);
   --color-earth: var(--earth);
-  --color-cream: var(--cream);
-  --color-sand: var(--sand);
-
-  /* Aliados legados (usados antes da reforma) */
-  --color-sage: var(--olive-deep);
-  --color-sage-soft: var(--olive-soft);
-  --color-sky-soft: var(--olive-soft);
-  --color-beige: var(--cream);
+  --color-earth-deep: var(--earth-deep);
+  --color-ink: var(--ink);
   --color-whatsapp: var(--whatsapp);
 
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
@@ -50,47 +50,53 @@
 }
 
 /*
-  Identidade visual — paleta verde-oliva / bege / marrom-terra.
+  Identidade visual — editorial premium (verde oliva / creme / marrom-terra).
+  Hierarquia por blocos de cor: paper -> cream -> mist -> earth -> earth-deep.
   Contrastes verificados (WCAG AA):
-  - earth      #3B3327 sobre cream #EDE9E1  -> ~10.9:1
-  - olive-deep #5C6B51 sobre cream #EDE9E1  -> ~4.7:1 (texto normal ok)
-  - white      #FFFFFF sobre olive-deep     -> ~5.7:1 (botões ok)
-  - muted-fg   #6A6355 sobre cream          -> ~4.8:1
+  - earth #4A4037 sobre paper #F8F6F1 -> ~9.3:1
+  - olive-deep #55624B sobre paper    -> ~6.0:1
+  - cream #EDE9E1 sobre earth         -> ~7.4:1
+  - muted-fg #6B6355 sobre paper      -> ~4.9:1
 */
 :root {
-  --radius: 1rem;
+  --radius: 0.375rem;
 
-  --background: #ede9e1;
-  --foreground: #3b3327;
-
-  --card: #faf8f4;
-  --card-foreground: #3b3327;
-
-  --primary: #5c6b51;
-  --primary-foreground: #fdfcf9;
-
-  --secondary: #e3ddcf;
-  --secondary-foreground: #46543e;
-
-  --muted: #e5dfd3;
-  --muted-foreground: #6a6355;
-
-  --accent: #dfe3d6;
-  --accent-foreground: #46543e;
-
-  --border: #dbd3c4;
-  --input: #dbd3c4;
-  --ring: #7a8b6f;
-
-  --destructive: #a4472f;
-  --destructive-foreground: #fdfcf9;
-
-  --olive: #7a8b6f;
-  --olive-deep: #5c6b51;
-  --olive-soft: #e7eadf;
-  --earth: #3b3327;
+  /* superfícies */
+  --paper: #f8f6f1;
   --cream: #ede9e1;
-  --sand: #f7f3ea;
+  --sand: #f2eee5;
+  --mist: #e9ece2;
+
+  /* tinta */
+  --earth: #4a4037;
+  --earth-deep: #362d23;
+  --ink: #2a211a;
+
+  /* verdes da marca */
+  --olive: #7a8b6f;
+  --olive-deep: #55624b;
+  --olive-soft: #dde3d2;
+
+  /* tokens semânticos (compatibilidade shadcn/ui) */
+  --background: var(--paper);
+  --foreground: var(--earth);
+  --card: #fcfaf6;
+  --card-foreground: var(--earth);
+  --popover: var(--paper);
+  --popover-foreground: var(--earth);
+  --primary: var(--olive-deep);
+  --primary-foreground: #fcfaf6;
+  --secondary: var(--mist);
+  --secondary-foreground: var(--olive-deep);
+  --muted: var(--cream);
+  --muted-foreground: #6b6355;
+  --accent: var(--mist);
+  --accent-foreground: var(--olive-deep);
+  --destructive: #a3402e;
+  --destructive-foreground: #fcfaf6;
+  --border: #ddd5c7;
+  --input: #ddd5c7;
+  --ring: var(--olive);
   --whatsapp: #25d366;
 }
 
@@ -102,26 +108,33 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--color-paper);
+    color: var(--color-earth);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
   h1,
   h2,
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-weight: 500;
+    font-optical-sizing: auto;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  em,
+  blockquote {
+    font-optical-sizing: auto;
   }
   ::selection {
     background-color: var(--olive-soft);
     color: var(--earth);
   }
   :focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -134,5 +147,100 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+}
+
+@layer components {
+  /* Eyebrow/kicker editorial */
+  .eyebrow {
+    @apply inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.3em];
+    color: var(--olive-deep);
+  }
+  .eyebrow::before {
+    content: "";
+    @apply h-px w-8;
+    background: color-mix(in srgb, var(--olive-deep) 55%, transparent);
+  }
+  .eyebrow-light {
+    color: color-mix(in srgb, var(--cream) 85%, transparent);
+  }
+  .eyebrow-light::before {
+    background: color-mix(in srgb, var(--cream) 45%, transparent);
+  }
+
+  /* Botões — pílula contemporânea, sentence-case, com seta viva */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-full px-7 py-3.5 text-sm font-semibold tracking-[0.01em] transition-all duration-300;
+  }
+  .btn-primary {
+    @apply text-[#fcfaf6];
+    background: var(--earth);
+  }
+  .btn-primary:hover {
+    background: var(--olive-deep);
+  }
+  .btn-light {
+    @apply text-earth;
+    background: var(--cream);
+  }
+  .btn-light:hover {
+    background: #ffffff;
+  }
+
+  /* Link editorial com deslocamento de seta */
+  .link-line {
+    @apply relative inline-flex items-center gap-2 text-sm font-semibold;
+    color: var(--earth);
+  }
+  .link-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+  }
+  .link-line:hover::after {
+    opacity: 1;
+  }
+  .link-line-light {
+    color: var(--cream);
+  }
+
+  /* Campos de formulário — linha inferior, estilo editorial */
+  .field-input {
+    @apply w-full rounded-none border-0 border-b bg-transparent px-0 py-3 text-[15px] transition-colors duration-300;
+    border-color: color-mix(in srgb, var(--earth) 25%, transparent);
+    color: var(--earth);
+  }
+  .field-input::placeholder {
+    color: color-mix(in srgb, var(--earth) 40%, transparent);
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--earth);
+  }
+
+  /* Chips de seleção (radio escondido) */
+  .chip {
+    @apply cursor-pointer rounded-[4px] border px-4 py-2.5 text-center text-sm transition-all duration-200;
+    border-color: color-mix(in srgb, var(--earth) 20%, transparent);
+    color: var(--earth);
+  }
+  .chip:hover {
+    border-color: color-mix(in srgb, var(--earth) 45%, transparent);
+  }
+  .chip-selected {
+    background: var(--earth);
+    border-color: var(--earth);
+    color: var(--cream);
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em];
+    color: color-mix(in srgb, var(--earth) 60%, transparent);
   }
 }
