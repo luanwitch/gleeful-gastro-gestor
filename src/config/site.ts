@@ -5,33 +5,31 @@
  */
 
 export const site = {
-  // [PREENCHER: nome completo e como assina profissionalmente]
-  name: "[PREENCHER: Nome da Psicóloga]",
-  // [PREENCHER: título curto usado no header e compartilhamentos]
+
+  name: "Fernanda Dahmer",
+  
   title: "Psicóloga Clínica",
   tagline: "Psicoterapia com acolhimento",
 
   // [PREENCHER: CRP real — OBRIGATÓRIO por regulamentação do CRP. Não publicar sem este dado.]
-  crp: "[PREENCHER: CRP 00/00000]",
+  crp: "CRP 07/43730",
 
   contact: {
-    // [PREENCHER: número real no formato internacional, só dígitos — ex.: 5511999998888]
-    whatsappNumber: "55SEUNUMERO",
+    whatsappNumber: "55 54 9967-3897",
     whatsappGreeting: "Olá! Vim pelo site e gostaria de agendar uma conversa inicial.",
-    // [PREENCHER: e-mail profissional de contato]
+    
     email: "[PREENCHER: email@profissional.com]",
-    // [PREENCHER: endereço do consultório completo — rua, número, bairro, cidade/UF]
-    address: "[PREENCHER: Endereço do consultório — Cidade/UF]",
-    addressShort: "[PREENCHER: Cidade/UF]",
-    // [PREENCHER: horários de atendimento, ex.: "Seg a Sex, 8h às 19h"]
-    hours: "[PREENCHER: dias e horários de atendimento]",
+  
+    address: "Rua Garibaldi, 554  — Caxias do sul/RS]",
+    addressShort: "Caxias do sul/RS",
+    hours: "Seg a Sex, 8h às 19h",
   },
 
   social: {
-    // [PREENCHER: usuário real do Instagram, sem @]
-    instagramUser: "handle.do.instagram",
+    instagramUser: "ferdescomplica",
     get instagramUrl() {
-      return `https://instagram.com/${this.instagramUser}`;
+      return `https://www.instagram.com/ferdescomplica/`;
+      
     },
   },
 

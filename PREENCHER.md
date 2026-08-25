@@ -15,9 +15,9 @@ detecta os placeholders (inclusive valores-sentinelas como `55SEUNUMERO`,
 
 | Campo                                        | Onde aparece                                | Status                                                                             |
 | -------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Nome da profissional                         | Header, Hero, Sobre, rodapé, SEO            | `Fernanda Damehmer`                                                   |
-| CRP                                          | Seção Formação, rodapé, schema.org          | `CRP 07/43730` — **obrigatório por regulamentação; não publicar sem** |
-| WhatsApp (formato internacional, só dígitos) | Todos os CTAs, formulário                   | `55 54 99967-3897`                                                                      |
+| Nome da profissional                         | Header, Hero, Sobre, rodapé, SEO            | `[PREENCHER: Nome da Psicóloga]`                                                   |
+| CRP                                          | Seção Formação, rodapé, schema.org          | `[PREENCHER: CRP 00/00000]` — **obrigatório por regulamentação; não publicar sem** |
+| WhatsApp (formato internacional, só dígitos) | Todos os CTAs, formulário                   | `55SEUNUMERO`                                                                      |
 | E-mail                                       | Rodapé, schema.org                          | `[PREENCHER: email@profissional.com]`                                              |
 | Endereço do consultório                      | Rodapé, schema.org                          | `[PREENCHER: Endereço — Cidade/UF]`                                                |
 | Horários de atendimento                      | Rodapé                                      | `[PREENCHER: dias e horários]`                                                     |
