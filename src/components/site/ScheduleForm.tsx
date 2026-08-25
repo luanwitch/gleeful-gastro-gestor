@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { isPlaceholder, whatsappReady, whatsappUrl, site } from "@/config/site";
+import { trackScheduleSubmit, trackWhatsAppClick } from "@/lib/analytics";
 import { Accent, Filler, Kicker, MotionDiv, Section } from "./shared";
 
 const modalidades = ["Online", "Presencial"] as const;
@@ -12,23 +14,13 @@ export function ScheduleForm() {
   const [modalidade, setModalidade] = useState<string>("Online");
   const [periodo, setPeriodo] = useState<string>("Sem preferência");
   const [mensagem, setMensagem] = useState("");
+  const [consentimento, setConsentimento] = useState(false);
   const [erro, setErro] = useState("");
 
   const emailOk = !isPlaceholder(site.contact.email);
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!nome.trim()) {
-      setErro("Por favor, informe seu nome.");
-      return;
-    }
-    if (!whatsappReady) {
-      toast.error(
-        "O número de WhatsApp ainda não foi configurado — preencha em src/config/site.ts.",
-      );
-      return;
-    }
-    setErro("");
+  /** Corpo comum da mensagem — usada no WhatsApp e no fallback de e-mail. */
+  function montarMensagem(): string {
     const linhas = [
       `Olá! Vim pelo site e gostaria de agendar uma conversa inicial.`,
       ``,
@@ -39,8 +31,44 @@ export function ScheduleForm() {
     if (mensagem.trim()) {
       linhas.push(`Mensagem: ${mensagem.trim()}`);
     }
-    window.open(whatsappUrl(linhas.join("\n")), "_blank", "noopener,noreferrer");
-    toast.success("Abrindo o WhatsApp com seus dados…");
+    return linhas.join("\n");
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!nome.trim()) {
+      setErro("Por favor, informe seu nome.");
+      return;
+    }
+    if (!consentimento) {
+      setErro("Para continuar, é preciso concordar com a Política de Privacidade.");
+      return;
+    }
+    setErro("");
+    const mensagemPronta = montarMensagem();
+
+    if (whatsappReady) {
+      window.open(whatsappUrl(mensagemPronta), "_blank", "noopener,noreferrer");
+      toast.success("Abrindo o WhatsApp com seus dados…");
+    } else if (emailOk) {
+      // Fallback LGPD/contingência: sem WhatsApp configurado, envia por e-mail.
+      const subject = encodeURIComponent("Agendamento pelo site");
+      const body = encodeURIComponent(mensagemPronta);
+      window.location.href = `mailto:${site.contact.email}?subject=${subject}&body=${body}`;
+      toast.success("Abrindo seu aplicativo de e-mail com os dados preenchidos…");
+    } else {
+      toast.error(
+        "O número de WhatsApp ainda não foi configurado — preencha em src/config/site.ts.",
+      );
+      return;
+    }
+
+    // Conversão registrada só quando o envio realmente acontece.
+    trackScheduleSubmit({
+      modalidade,
+      periodo,
+      canal: whatsappReady ? "whatsapp" : "email",
+    });
   }
 
   return (
@@ -79,6 +107,7 @@ export function ScheduleForm() {
                 href={whatsappUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackWhatsAppClick("outros-canais")}
                 className="block text-cream/85 underline-offset-4 transition-colors hover:text-cream hover:underline"
               >
                 WhatsApp — atendimento direto
@@ -194,15 +223,47 @@ export function ScheduleForm() {
               />
             </div>
 
+            {/* Consentimento LGPD — obrigatório antes do envio */}
+            <div className="mt-8">
+              <label htmlFor="ag-consentimento" className="flex cursor-pointer items-start gap-3">
+                <input
+                  id="ag-consentimento"
+                  name="consentimento"
+                  type="checkbox"
+                  required
+                  checked={consentimento}
+                  onChange={(e) => setConsentimento(e.target.checked)}
+                  aria-describedby={erro && !consentimento ? "ag-nome-erro" : undefined}
+                  className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-[#4a4037]"
+                />
+                <span className="text-xs leading-relaxed text-earth/70">
+                  Li e concordo com a{" "}
+                  <Link
+                    to="/privacidade"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-earth underline underline-offset-2 hover:text-olive-deep"
+                  >
+                    Política de Privacidade
+                  </Link>{" "}
+                  e autorizo o uso dos dados acima apenas para retorno deste contato.
+                </span>
+              </label>
+            </div>
+
             <button type="submit" className="btn btn-primary group mt-9 w-full">
-              Enviar pelo WhatsApp
+              {whatsappReady ? "Enviar pelo WhatsApp" : emailOk ? "Enviar por e-mail" : "Enviar"}
               <ArrowRight
                 aria-hidden="true"
                 className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
               />
             </button>
             <p className="mt-4 text-center text-xs text-earth/55">
-              Ao enviar, o WhatsApp abrirá com sua mensagem já preenchida.
+              {whatsappReady
+                ? "Ao enviar, o WhatsApp abrirá com sua mensagem já preenchida."
+                : emailOk
+                  ? "Ao enviar, seu aplicativo de e-mail abrirá com a mensagem pronta."
+                  : "Envio temporariamente indisponível — configuração pendente."}
             </p>
           </form>
         </MotionDiv>

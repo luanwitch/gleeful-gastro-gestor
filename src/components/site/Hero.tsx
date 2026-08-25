@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
 import heroImg from "@/assets/hero-therapist.jpg";
 import { reveal } from "./motion";

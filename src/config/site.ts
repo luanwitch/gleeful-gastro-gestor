@@ -48,7 +48,16 @@ export const site = {
   },
 } as const;
 
-/** Monta a URL do WhatsApp com mensagem opcional pré-preenchida. */
+/**
+ * Monta a URL do WhatsApp com mensagem opcional pré-preenchida.
+ *
+ * UTM-safe por construção: a URL é absoluta para wa.me e nunca herda query
+ * strings nem hash da página atual — um usuário que chega via anúncio
+ * (`/utm_source=instagram&...`) ou link com parâmetros sempre recebe o mesmo
+ * href canônico com a mensagem intacta. A atribuição de campanha é feita pelo
+ * evento "WhatsApp Click" (ver src/lib/analytics.ts), que envia os utm_* como
+ * props do disparo em vez de tentar repassá-los ao wa.me (que os descarta).
+ */
 export function whatsappUrl(message?: string): string {
   const text = encodeURIComponent(message?.trim() || site.contact.whatsappGreeting);
   return `https://wa.me/${site.contact.whatsappNumber}?text=${text}`;
@@ -75,8 +84,13 @@ export const whatsappReady = !isPlaceholder(site.contact.whatsappNumber);
 /**
  * Depoimentos — espaço para 3–5 relatos.
  * [PREENCHER: substituir pelos depoimentos reais autorizados pelas pacientes.
- * Por sigilo ético, usar apenas iniciais ou primeiro nome. Nada de promessa
- * de resultado terapêutico — relatos de experiência pessoal.]
+ * Por sigilo ético, usar apenas iniciais ou primeiro nome.]
+ *
+ * ⚠️ ATENÇÃO — Resolução CFP nº 04/2020 (art. 3º) e o Código de Ética Profissional
+ * do Psicólogo proíbem promessa de resultado em publicidade. Os depoimentos devem
+ * descrever a EXPERIÊNCIA do atendimento (acolhimento, escuta, pontualidade),
+ * nunca "cura", solução garantida ou resultado terapêutico assegurado. Revisar cada
+ * texto com esse critério antes de publicar — e manter autorização por escrito.
  */
 export const testimonials = [
   {
@@ -121,3 +135,11 @@ export const credentials = {
     "[PREENCHER: membro de associação profissional, se houver]",
   ] as const,
 };
+
+/**
+ * Convênios / planos de saúde aceitos — OPCIONAL.
+ * Deixar `null` (ou array vazio) enquanto não houver confirmação da cliente:
+ * nada é renderizado no site quando vazio, sem placeholder visível ao público.
+ * Formato sugerido: nomes como a cliente os escreve — ex.: ["Unimed", "Bradesco Saúde"].
+ */
+export const healthInsurance: string[] | null = null;

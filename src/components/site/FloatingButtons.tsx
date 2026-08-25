@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUp, MessageCircle } from "lucide-react";
 import { whatsappReady, whatsappUrl } from "@/config/site";
+import { trackWhatsAppClick } from "@/lib/analytics";
 
 export function FloatingButtons() {
   const [showTop, setShowTop] = useState(false);
@@ -21,6 +22,7 @@ export function FloatingButtons() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Conversar no WhatsApp"
+          onClick={() => trackWhatsAppClick("floating")}
           className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-whatsapp text-white shadow-xl transition-transform hover:scale-110"
         >
           <MessageCircle className="h-6 w-6" />

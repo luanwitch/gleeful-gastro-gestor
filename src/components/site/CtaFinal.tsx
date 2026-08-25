@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { whatsappReady, whatsappUrl } from "@/config/site";
+import { trackWhatsAppClick } from "@/lib/analytics";
 import { MotionDiv } from "./shared";
 
 const bookingHref = whatsappReady ? whatsappUrl() : "#agendamento";
@@ -31,6 +32,9 @@ export function FinalCta() {
           href={bookingHref}
           className="btn btn-light group mt-12"
           {...(whatsappReady ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+          onClick={() => {
+            if (whatsappReady) trackWhatsAppClick("cta-final");
+          }}
         >
           Agendar conversa inicial
           <ArrowRight

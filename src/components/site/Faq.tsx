@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { whatsappReady, whatsappUrl } from "@/config/site";
+import { trackWhatsAppClick } from "@/lib/analytics";
 import { Accent, Kicker, Section, Title } from "./shared";
 
 const faqs = [
@@ -10,7 +11,7 @@ const faqs = [
   },
   {
     q: "Quanto tempo dura uma sessão?",
-    a: "[PREENCHER: informar duração da sessão — ex.: 50 minutos — e frequência recomendada (semanal, quinzenal). Revisar com a profissional antes de publicar.]",
+    a: "[PREENCHER: duração da sessão e frequência recomendada — formato sugerido: “Sessões de 50 minutos, com frequência semanal, definida junto na conversa inicial.” A clínica costuma trabalhar com 50 min; confirmar o formato da profissional antes de publicar.]",
   },
   {
     q: "O atendimento pode ser online?",
@@ -22,7 +23,11 @@ const faqs = [
   },
   {
     q: "Qual o valor da consulta?",
-    a: "[PREENCHER: política de valores da profissional — ex.: valor da sessão avulsa, pacotes mensais e reajustes. Sugestão: informar que os valores são detalhados na conversa inicial.]",
+    a: "[PREENCHER: política de valores da profissional — formato sugerido: “Os valores são informados na conversa inicial, de forma transparente e sem surpresas”, seguido do valor da sessão/pacotes se a cliente autorizar publicar. Não inventar números.]",
+  },
+  {
+    q: "Você atende adolescentes ou crianças?",
+    a: "[PREENCHER: definir com a profissional se atende menores de idade. Se sim, informar faixa etária (ex.: adolescentes a partir de 14 anos) e como funciona a autorização/acompanhamento dos responsáveis. Se não atender, sugerir: “No momento, o atendimento é destinado a adultos.”]",
   },
 ];
 
@@ -48,6 +53,9 @@ export function Faq() {
                   : "#agendamento"
               }
               {...(whatsappReady ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              onClick={() => {
+                if (whatsappReady) trackWhatsAppClick("faq");
+              }}
               className="link-line group mt-8"
             >
               Tirar dúvidas

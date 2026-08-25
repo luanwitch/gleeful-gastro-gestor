@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { site, whatsappReady, whatsappUrl } from "@/config/site";
+import { trackWhatsAppClick } from "@/lib/analytics";
 
 const nav = [
   { label: "Início", href: "#inicio" },
@@ -87,6 +88,9 @@ export function Header() {
             <a
               href={bookingHref}
               {...(whatsappReady ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              onClick={() => {
+                if (whatsappReady) trackWhatsAppClick("header");
+              }}
               className="group hidden items-center gap-2 rounded-full border border-earth/25 px-5 py-2 text-sm font-medium text-earth transition-all duration-300 hover:border-earth hover:bg-earth hover:text-[#fcfaf6] md:inline-flex"
             >
               Agendar
@@ -170,6 +174,10 @@ export function Header() {
               <a
                 href={bookingHref}
                 {...(whatsappReady ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                onClick={() => {
+                  if (whatsappReady) trackWhatsAppClick("header");
+                  setOpenMenu(false);
+                }}
                 className="btn btn-primary w-full"
               >
                 Agendar conversa inicial

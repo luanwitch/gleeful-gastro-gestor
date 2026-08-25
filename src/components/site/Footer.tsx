@@ -1,5 +1,7 @@
 import { ArrowUp, Instagram, Mail, MessageCircle, Monitor } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { isPlaceholder, site, whatsappReady, whatsappUrl } from "@/config/site";
+import { trackWhatsAppClick } from "@/lib/analytics";
 import { Filler } from "./shared";
 
 const footerNav = [
@@ -88,6 +90,7 @@ export function Footer() {
                     href={whatsappUrl()}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick("footer")}
                     className="inline-flex items-center gap-2.5 text-cream/70 transition-colors hover:text-cream"
                   >
                     <MessageCircle aria-hidden="true" className="h-4 w-4 text-mist" />
@@ -177,7 +180,17 @@ export function Footer() {
           <p>
             © {year} {site.name} — Todos os direitos reservados.
           </p>
-          <p>Este site tem caráter informativo e não substitui acompanhamento psicológico.</p>
+          <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <Link to="/privacidade" className="transition-colors hover:text-cream">
+              Política de Privacidade
+            </Link>
+            <span aria-hidden="true" className="hidden sm:inline">
+              ·
+            </span>
+            <span className="text-xs">
+              Este site tem caráter informativo e não substitui acompanhamento psicológico.
+            </span>
+          </p>
         </div>
       </div>
     </footer>

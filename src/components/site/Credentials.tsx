@@ -1,4 +1,4 @@
-import { credentials, isPlaceholder, site } from "@/config/site";
+import { credentials, healthInsurance, isPlaceholder, site } from "@/config/site";
 import { Accent, Filler, Kicker, MotionDiv, Section, Title } from "./shared";
 
 /**
@@ -7,6 +7,7 @@ import { Accent, Filler, Kicker, MotionDiv, Section, Title } from "./shared";
  */
 export function Credentials() {
   const crpHidden = isPlaceholder(site.crp);
+  const convenios = healthInsurance && healthInsurance.length > 0 ? healthInsurance : null;
 
   const [graduacao, especializacao] = credentials.academic;
 
@@ -23,6 +24,13 @@ export function Credentials() {
               A base do meu trabalho combina formação acadêmica sólida e uma escuta atenta à
               singularidade de cada pessoa que chega até aqui.
             </p>
+
+            {convenios && (
+              <p className="mt-6 max-w-md text-sm leading-relaxed text-earth/65">
+                <span className="font-semibold text-earth">Convênios: </span>
+                {convenios.join(" · ")}. Confirme a cobertura na conversa inicial.
+              </p>
+            )}
 
             {/* abordagem — bloco tipográfico com hairline, sem caixa */}
             <div className="mt-10 border-t border-earth/15 pt-7">
