@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { whatsappReady, whatsappUrl } from "@/config/site";
+import { site, whatsappReady, whatsappUrl } from "@/config/site";
 import { trackWhatsAppClick } from "@/lib/analytics";
 import { Accent, Kicker, Section, Title } from "./shared";
 
@@ -47,11 +47,7 @@ export function Faq() {
               Não encontrou o que procurava? Me chame — respondo pessoalmente.
             </p>
             <a
-              href={
-                whatsappReady
-                  ? whatsappUrl("Olá! Tenho uma dúvida sobre o acompanhamento terapêutico.")
-                  : "#agendamento"
-              }
+              href={whatsappReady ? whatsappUrl(site.whatsappMessages.faq) : "#agendamento"}
               {...(whatsappReady ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               onClick={() => {
                 if (whatsappReady) trackWhatsAppClick("faq");

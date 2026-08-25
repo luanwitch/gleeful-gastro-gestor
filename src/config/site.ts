@@ -5,9 +5,8 @@
  */
 
 export const site = {
-
   name: "Fernanda Dahmer",
-  
+
   title: "Psicóloga Clínica",
   tagline: "Psicoterapia com acolhimento",
 
@@ -15,21 +14,28 @@ export const site = {
   crp: "CRP 07/43730",
 
   contact: {
-    whatsappNumber: "55 54 9967-3897",
-    whatsappGreeting: "Olá! Vim pelo site e gostaria de agendar uma conversa inicial.",
-    
+    whatsappNumber: "555499673897",
+    whatsappGreeting: "Olá! Vim pelo site e gostaria de saber mais sobre os atendimentos.",
+
     email: "[PREENCHER: email@profissional.com]",
-  
+
     address: "Rua Garibaldi, 554  — Caxias do sul/RS]",
     addressShort: "Caxias do sul/RS",
     hours: "Seg a Sex, 8h às 19h",
+  },
+
+  whatsappMessages: {
+    greeting: "Olá! Vim pelo site e gostaria de saber mais sobre os atendimentos.",
+    scheduling:
+      "Olá! Vim pelo site e gostaria de agendar um atendimento. Poderia me informar os horários disponíveis?",
+    ctaFinal: "Olá! Vi o site da Fernanda e gostaria de conversar sobre um atendimento.",
+    faq: "Olá! Tenho uma dúvida sobre o acompanhamento terapêutico.",
   },
 
   social: {
     instagramUser: "ferdescomplica",
     get instagramUrl() {
       return `https://www.instagram.com/ferdescomplica/`;
-      
     },
   },
 
@@ -57,8 +63,9 @@ export const site = {
  * props do disparo em vez de tentar repassá-los ao wa.me (que os descarta).
  */
 export function whatsappUrl(message?: string): string {
-  const text = encodeURIComponent(message?.trim() || site.contact.whatsappGreeting);
-  return `https://wa.me/${site.contact.whatsappNumber}?text=${text}`;
+  const digits = site.contact.whatsappNumber.replace(/\D/g, "");
+  const text = encodeURIComponent(message?.trim() || site.whatsappMessages.greeting);
+  return `https://wa.me/${digits}?text=${text}`;
 }
 
 /**

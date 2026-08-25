@@ -1,9 +1,9 @@
 import { ArrowRight } from "lucide-react";
-import { whatsappReady, whatsappUrl } from "@/config/site";
+import { site, whatsappReady, whatsappUrl } from "@/config/site";
 import { trackWhatsAppClick } from "@/lib/analytics";
 import { MotionDiv } from "./shared";
 
-const bookingHref = whatsappReady ? whatsappUrl() : "#agendamento";
+const bookingHref = whatsappReady ? whatsappUrl(site.whatsappMessages.ctaFinal) : "#agendamento";
 
 export function FinalCta() {
   return (

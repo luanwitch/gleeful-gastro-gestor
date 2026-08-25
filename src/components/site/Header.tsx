@@ -12,7 +12,7 @@ const nav = [
 ];
 
 /** Enquanto o número real não for configurado, CTAs caem no formulário. */
-const bookingHref = whatsappReady ? whatsappUrl() : "#agendamento";
+const bookingHref = whatsappReady ? whatsappUrl(site.whatsappMessages.scheduling) : "#agendamento";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);

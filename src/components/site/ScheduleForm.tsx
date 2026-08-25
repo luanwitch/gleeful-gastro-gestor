@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
-import { isPlaceholder, whatsappReady, whatsappUrl, site } from "@/config/site";
+import { isPlaceholder, site, whatsappReady, whatsappUrl } from "@/config/site";
 import { trackScheduleSubmit, trackWhatsAppClick } from "@/lib/analytics";
 import { Accent, Filler, Kicker, MotionDiv, Section } from "./shared";
 
@@ -22,8 +22,8 @@ export function ScheduleForm() {
   /** Corpo comum da mensagem — usada no WhatsApp e no fallback de e-mail. */
   function montarMensagem(): string {
     const linhas = [
-      `Olá! Vim pelo site e gostaria de agendar uma conversa inicial.`,
-      ``,
+      site.whatsappMessages.scheduling,
+      "",
       `Nome: ${nome.trim()}`,
       `Modalidade: ${modalidade}`,
       `Melhor período: ${periodo}`,
@@ -104,7 +104,7 @@ export function ScheduleForm() {
             </p>
             {whatsappReady ? (
               <a
-                href={whatsappUrl()}
+                href={whatsappUrl(site.whatsappMessages.scheduling)}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackWhatsAppClick("outros-canais")}
