@@ -7,30 +7,49 @@ const bookingHref = whatsappReady ? whatsappUrl(site.whatsappMessages.ctaFinal) 
 
 export function FinalCta() {
   return (
-    <section className="relative overflow-hidden border-t border-cream/10 bg-earth-deep text-cream">
-      {/* brilho radial contido + anel discreto */}
+    <section
+      style={{ backgroundColor: "#faf8f3" }}
+      className="relative overflow-hidden border-t border-border bg-paper text-earth"
+    >
+      {/* Brilho suave e sutil */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 left-1/2 h-[36rem] w-[64rem] -translate-x-1/2 -translate-y-1/2 rounded-[100%] bg-olive/10 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 left-1/2 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-cream/[0.07]"
+        className="pointer-events-none absolute top-1/2 left-1/2 h-[32rem] w-[56rem] -translate-x-1/2 -translate-y-1/2 rounded-[100%] bg-cream blur-3xl opacity-70"
       />
 
-      <MotionDiv className="relative mx-auto max-w-4xl px-5 py-32 text-center sm:px-8 sm:py-44">
-        <p className="eyebrow eyebrow-light justify-center">Pronto quando você estiver</p>
-        <h2 className="mx-auto mt-9 max-w-3xl font-display text-[clamp(2.6rem,6.5vw,4.6rem)] leading-[1.02] tracking-[-0.03em]">
-          Dar o primeiro passo <em className="font-display text-mist italic">também faz parte</em>{" "}
+      <MotionDiv className="relative mx-auto max-w-4xl px-5 py-28 text-center sm:px-8 sm:py-36">
+        <p className="eyebrow justify-center" style={{ color: "#8a542f" }}>
+          Pronto quando você estiver
+        </p>
+        <h2
+          style={{ color: "#39372f" }}
+          className="mx-auto mt-8 max-w-3xl font-display text-[clamp(2.4rem,5.8vw,4.2rem)] leading-[1.04] tracking-[-0.03em] text-earth"
+        >
+          Dar o primeiro passo{" "}
+          <em
+            className="font-display text-accent italic font-semibold"
+            style={{ color: "#8a542f", fontWeight: 600 }}
+          >
+            também faz parte
+          </em>{" "}
           do processo.
         </h2>
-        <p className="mx-auto mt-7 max-w-xl leading-relaxed text-cream/70">
+        <p
+          style={{ color: "#39372f" }}
+          className="mx-auto mt-6 max-w-xl leading-relaxed text-earth/80"
+        >
           Não é preciso ter certeza para começar. Uma mensagem basta — sem compromisso, no seu tempo
           e com total sigilo.
         </p>
         <a
           href={bookingHref}
-          className="btn btn-light group mt-12"
+          style={{
+            backgroundColor: "#3f4824",
+            color: "#ffffff",
+            borderColor: "#3f4824",
+            boxShadow: "0 6px 20px 0 rgba(63, 72, 36, 0.4)",
+          }}
+          className="btn btn-primary group mt-10 shadow-md"
           {...(whatsappReady ? { target: "_blank", rel: "noopener noreferrer" } : {})}
           onClick={() => {
             if (whatsappReady) trackWhatsAppClick("cta-final");

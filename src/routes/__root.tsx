@@ -107,7 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: seoTitle },
       { name: "twitter:description", content: site.seo.description },
-      { name: "theme-color", content: "#ede9e1" },
+      { name: "theme-color", content: "#faf8f3" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -116,7 +116,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Manrope:wght@400;500;600;700;800&display=swap",
       },
-      { rel: "stylesheet", href: appCss },
+      { rel: "stylesheet", href: `${appCss}?v=palette-contrast-v5` },
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
     ],
     scripts: [
@@ -149,11 +149,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className="scroll-smooth">
+    <html
+      lang="pt-BR"
+      className="scroll-smooth"
+      style={{ backgroundColor: "#faf8f3", color: "#39372f" }}
+    >
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body style={{ backgroundColor: "#faf8f3", color: "#39372f" }}>
         <a
           href="#top"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:bg-paper focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-earth focus:shadow-lg focus:ring-1 focus:ring-earth/15"

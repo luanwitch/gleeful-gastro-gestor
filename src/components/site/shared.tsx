@@ -6,16 +6,16 @@ import { fadeUp } from "./motion";
 type Tone = "cream" | "paper" | "mist" | "earth" | "deep";
 
 const toneBg: Record<Tone, string> = {
-  cream: "bg-cream",
-  paper: "bg-paper",
-  mist: "bg-mist",
-  earth: "bg-earth text-cream",
-  deep: "bg-earth-deep text-cream",
+  cream: "bg-cream text-earth",
+  paper: "bg-paper text-earth",
+  mist: "bg-cream text-earth",
+  earth: "bg-cream text-earth",
+  deep: "bg-paper text-earth",
 };
 
 /**
- * Seção com fundo alternado — cria o ritmo editorial entre blocos.
- * `pad` permite variar a densidade de cada bloco (whitespace intencional).
+ * Seção com fundo alternado — cria o ritmo editorial acolhedor entre blocos.
+ * Alterna suavemente entre #faf8f3 (paper) e #f3efe7 (cream).
  */
 export function Section({
   id,
@@ -31,29 +31,41 @@ export function Section({
   pad?: string;
 }) {
   return (
-    <section id={id} className={`scroll-mt-24 ${toneBg[tone]} ${className}`}>
+    <section
+      id={id}
+      style={{ backgroundColor: tone === "cream" ? "#ede3d4" : "#faf8f3" }}
+      className={`scroll-mt-24 ${toneBg[tone]} ${className}`}
+    >
       <div className={`mx-auto max-w-7xl px-5 sm:px-8 lg:px-12 ${pad}`}>{children}</div>
     </section>
   );
 }
 
-/** Kicker/eyebrow editorial. Use `light` sobre fundos escuros. */
-export function Kicker({ children, light }: { children: ReactNode; light?: boolean }) {
-  return <p className={`eyebrow ${light ? "eyebrow-light" : ""}`}>{children}</p>;
-}
-
-/** Palavra/frase em destaque — serifada itálica. */
-export function Accent({ children, light }: { children: ReactNode; light?: boolean }) {
+/** Kicker/eyebrow editorial com terracota acolhedor (#8a542f). */
+export function Kicker({ children }: { children: ReactNode; light?: boolean }) {
   return (
-    <em className={`font-display italic ${light ? "text-mist" : "text-olive-deep"}`}>{children}</em>
+    <p className="eyebrow font-bold" style={{ color: "#8a542f", fontWeight: 700 }}>
+      {children}
+    </p>
   );
 }
 
-/** Título de seção — serifado. `lg` para seções de maior peso hierárquico. */
+/** Palavra/frase em destaque — serifada itálica em terracota vibrante (#8a542f) e encorpada. */
+export function Accent({ children }: { children: ReactNode; light?: boolean }) {
+  return (
+    <em
+      className="font-display italic font-semibold text-accent"
+      style={{ color: "#8a542f", fontWeight: 600 }}
+    >
+      {children}
+    </em>
+  );
+}
+
+/** Título de seção — serifado com tipografia escura sofisticada (#39372f). */
 export function Title({
   children,
   center,
-  light,
   size = "md",
   as: Tag = "h2",
 }: {
@@ -67,9 +79,10 @@ export function Title({
     size === "lg" ? "text-[clamp(2.35rem,4.6vw,3.75rem)]" : "text-[clamp(1.95rem,3.4vw,2.9rem)]";
   return (
     <Tag
-      className={`mt-6 font-display ${scale} leading-[1.06] tracking-[-0.025em] ${
-        light ? "text-cream" : ""
-      } ${center ? "mx-auto max-w-2xl text-center" : ""}`}
+      style={{ color: "#39372f" }}
+      className={`mt-6 font-display ${scale} leading-[1.06] tracking-[-0.025em] text-earth ${
+        center ? "mx-auto max-w-2xl text-center" : ""
+      }`}
     >
       {children}
     </Tag>

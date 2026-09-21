@@ -1,19 +1,29 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
-import heroImg from "@/assets/hero-therapist.jpg";
+import heroImg from "@/assets/img1.png";
 import { reveal } from "./motion";
 
-/** Fatos institucionais — apenas compromissos de conduta já afirmados no site. */
+/** Fatos institucionais — compromissos de conduta alinhados à prática clínica. */
 const meta = ["Online e presencial", "Sigilo profissional", "Sem compromisso"];
 
 export function Hero() {
   return (
-    <section id="inicio" className="relative overflow-hidden bg-cream">
+    <section
+      id="inicio"
+      style={{ backgroundColor: "#faf8f3" }}
+      className="relative overflow-hidden bg-paper"
+    >
       <div className="mx-auto max-w-7xl px-5 pt-32 sm:px-8 sm:pt-44 lg:px-12">
         <div className="grid gap-16 lg:grid-cols-12 lg:gap-10">
           {/* Texto — escada tipográfica */}
           <div className="flex flex-col justify-center lg:col-span-7">
-            <motion.p initial="hidden" animate="show" variants={reveal} className="eyebrow">
+            <motion.p
+              initial="hidden"
+              animate="show"
+              variants={reveal}
+              style={{ color: "#8a542f" }}
+              className="eyebrow"
+            >
               Psicoterapia • Online e presencial
             </motion.p>
 
@@ -22,11 +32,17 @@ export function Hero() {
               animate="show"
               variants={reveal}
               transition={{ delay: 0.08 }}
-              className="mt-9 font-display text-[clamp(2.9rem,7.6vw,6rem)] leading-[0.99] font-normal tracking-[-0.03em]"
+              style={{ color: "#39372f" }}
+              className="mt-9 font-display text-[clamp(2.9rem,7.6vw,6rem)] leading-[0.99] font-normal tracking-[-0.03em] text-earth"
             >
               <span className="block">Um espaço</span>
               <span className="block">para você se escutar</span>
-              <span className="block pt-1 pl-[7%] text-olive-deep italic">com mais calma.</span>
+              <span
+                className="block pt-1 pl-[7%] text-accent italic font-semibold"
+                style={{ color: "#8a542f", fontWeight: 600 }}
+              >
+                com mais calma.
+              </span>
             </motion.h1>
 
             <motion.p
@@ -34,7 +50,8 @@ export function Hero() {
               animate="show"
               variants={reveal}
               transition={{ delay: 0.16 }}
-              className="mt-9 max-w-md text-[17px] leading-relaxed text-earth/70"
+              style={{ color: "#39372f" }}
+              className="mt-9 max-w-md text-[17px] leading-relaxed text-earth/80"
             >
               Atendimento psicológico para quem busca compreender a ansiedade, fortalecer a
               autoestima e viver relações mais leves — no seu tempo, no seu ritmo.
@@ -47,7 +64,16 @@ export function Hero() {
               transition={{ delay: 0.24 }}
               className="mt-11 flex flex-wrap items-center gap-x-8 gap-y-4"
             >
-              <a href="#agendamento" className="btn btn-primary group">
+              <a
+                href="#agendamento"
+                style={{
+                  backgroundColor: "#3f4824",
+                  color: "#ffffff",
+                  borderColor: "#3f4824",
+                  boxShadow: "0 6px 18px 0 rgba(63, 72, 36, 0.38)",
+                }}
+                className="btn btn-primary group shadow-md"
+              >
                 Agendar conversa inicial
                 <ArrowRight
                   aria-hidden="true"
@@ -71,26 +97,25 @@ export function Hero() {
             transition={{ duration: 1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="relative mx-auto w-full max-w-[24rem] self-end xl:-mr-12 lg:col-span-5 lg:mx-0 lg:max-w-none"
           >
-            {/* eco do arco — contorno deslocado, sem preenchimento */}
+            {/* Contorno decorativo em tom visível (#a38e79) */}
             <div
               aria-hidden="true"
-              className="absolute -top-5 -right-5 h-full w-full rounded-t-full rounded-b-[6px] border border-olive/35 sm:-top-6 sm:-right-6"
+              style={{ borderColor: "#a38e79" }}
+              className="absolute -top-5 -right-5 h-full w-full rounded-t-full rounded-b-[6px] border sm:-top-6 sm:-right-6"
             />
-            {/* marca de registro editorial */}
+            {/* Marca de registro editorial em terracota (#8a542f) */}
             <span
               aria-hidden="true"
-              className="absolute -top-10 right-2 hidden font-display text-xl text-olive-deep/50 select-none sm:block"
+              style={{ color: "#8a542f", fontWeight: 700 }}
+              className="absolute -top-10 right-2 hidden font-display text-2xl font-bold select-none sm:block"
             >
               +
             </span>
 
-            <figure className="group relative overflow-hidden rounded-t-full rounded-b-[6px] shadow-xl shadow-earth/15 ring-1 ring-earth/10">
-              {/* [PREENCHER FOTO: substituir src/assets/hero-therapist.jpg por retrato
-                  editorial real da profissional — luz natural suave, foco rosto/ombros,
-                  proporção 4/5, crop central. O layout já está preparado. */}
+            <figure className="group relative overflow-hidden rounded-t-full rounded-b-[6px] shadow-xl shadow-earth/15 ring-2 ring-[#a38e79]/50">
               <img
                 src={heroImg}
-                alt="Retrato da psicóloga em ambiente acolhedor"
+                alt="Retrato da psicóloga Fernanda Dahmer em ambiente acolhedor"
                 width={1400}
                 height={1750}
                 fetchPriority="high"
@@ -99,22 +124,35 @@ export function Hero() {
               />
             </figure>
 
-            {/* nota de processo sobreposta — tratamento de etiqueta, não card */}
+            {/* Nota de processo sobreposta com contraste e borda destacada em #a38e79 */}
             <a
               href="#processo"
-              className="group absolute -bottom-9 left-3 flex max-w-[15.5rem] items-start gap-3 rounded-[2px] bg-paper/95 p-4 pr-5 shadow-md shadow-earth/10 ring-1 ring-earth/10 backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1 sm:-left-10 sm:p-5"
+              style={{
+                backgroundColor: "#faf8f3",
+                borderColor: "#a38e79",
+                borderWidth: "1.5px",
+                boxShadow: "0 8px 24px -4px rgba(57, 55, 47, 0.16)",
+              }}
+              className="group absolute -bottom-9 left-3 flex max-w-[15.5rem] items-start gap-3 rounded-[8px] border bg-paper p-4 pr-5 shadow-md backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1 sm:-left-10 sm:p-5"
             >
               <span
                 aria-hidden="true"
-                className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-mist font-display text-sm text-olive-deep"
+                style={{ backgroundColor: "#3f4824", color: "#ffffff", borderColor: "#3f4824" }}
+                className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full font-display text-sm font-bold shadow-xs"
               >
                 01
               </span>
               <span>
-                <span className="block text-[10px] font-semibold tracking-[0.18em] text-olive-deep uppercase">
+                <span
+                  style={{ color: "#8a542f", fontWeight: 700 }}
+                  className="block text-[10px] font-semibold tracking-[0.18em] text-accent uppercase"
+                >
                   Primeiro passo
                 </span>
-                <span className="mt-1 block font-display text-[15px] leading-snug">
+                <span
+                  style={{ color: "#39372f" }}
+                  className="mt-1 block font-display text-[15px] leading-snug text-earth"
+                >
                   A conversa inicial é sem compromisso.
                 </span>
               </span>
@@ -122,21 +160,25 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* linha de base — meta editorial + convite ao scroll */}
+        {/* Linha de base — meta editorial + convite ao scroll */}
         <motion.div
           initial="hidden"
           animate="show"
           variants={reveal}
           transition={{ delay: 0.4 }}
-          className="mt-28 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 border-t border-earth/15 py-7 lg:mt-36"
+          className="mt-28 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 border-t border-border py-7 lg:mt-36"
         >
           <ul
             aria-label="Informações sobre o atendimento"
-            className="flex flex-wrap items-center gap-x-7 gap-y-2 text-[11px] font-semibold tracking-[0.18em] text-earth/55 uppercase"
+            className="flex flex-wrap items-center gap-x-7 gap-y-2 text-[11px] font-semibold tracking-[0.18em] text-earth/60 uppercase"
           >
             {meta.map((item) => (
               <li key={item} className="flex items-center gap-7">
-                <span aria-hidden="true" className="h-1 w-1 rounded-full bg-olive/60" />
+                <span
+                  aria-hidden="true"
+                  style={{ backgroundColor: "#8a542f" }}
+                  className="h-1.5 w-1.5 rounded-full bg-accent"
+                />
                 {item}
               </li>
             ))}
@@ -145,7 +187,7 @@ export function Hero() {
           <a
             href="#sobre"
             aria-label="Rolar para a próxima seção"
-            className="group inline-flex items-center gap-3 text-[11px] font-semibold tracking-[0.18em] text-earth/55 uppercase transition-colors duration-300 hover:text-earth"
+            className="group inline-flex items-center gap-3 text-[11px] font-semibold tracking-[0.18em] text-earth/65 uppercase transition-colors duration-300 hover:text-primary"
           >
             Role para conhecer
             <ArrowDown

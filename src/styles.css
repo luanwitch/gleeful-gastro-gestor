@@ -2,6 +2,21 @@
 @source "../src";
 @import "tw-animate-css";
 
+:root {
+  --bg-primary: #faf8f3 !important;
+  --bg-card: #f3efe7 !important;
+  --border-subtle: #d8cdbd !important;
+  --text-primary: #39372f !important;
+  --text-accent: #8a542f !important;
+  --btn-primary: #3f4824 !important;
+  --btn-hover: #777752 !important;
+}
+
+body, html {
+  background-color: #faf8f3 !important;
+  color: #39372f !important;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -12,104 +27,122 @@
   --radius-2xl: calc(var(--radius) + 10px);
   --radius-3xl: calc(var(--radius) + 14px);
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
+  --color-background: #faf8f3;
+  --color-foreground: #39372f;
+  --color-card: #f3efe7;
+  --color-card-foreground: #39372f;
+  --color-popover: #faf8f3;
+  --color-popover-foreground: #39372f;
+  --color-primary: #3f4824;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #777752;
+  --color-secondary-foreground: #ffffff;
+  --color-muted: #ede3d4;
+  --color-muted-foreground: #777752;
+  --color-accent: #8a542f;
+  --color-accent-foreground: #ffffff;
+  --color-border: #a38e79;
+  --color-input: #a38e79;
+  --color-ring: #3f4824;
+  --color-destructive: #a3402e;
+  --color-destructive-foreground: #ffffff;
 
-  /* Paleta da marca — identidade editorial */
-  --color-paper: var(--paper);
-  --color-cream: var(--cream);
-  --color-sand: var(--sand);
-  --color-mist: var(--mist);
-  --color-olive: var(--olive);
-  --color-olive-deep: var(--olive-deep);
-  --color-olive-soft: var(--olive-soft);
-  --color-earth: var(--earth);
-  --color-earth-deep: var(--earth-deep);
-  --color-ink: var(--ink);
-  --color-whatsapp: var(--whatsapp);
+  /* Paleta oficial da marca — valores literais hexadecimais */
+  --color-paper: #faf8f3;
+  --color-cream: #ede3d4;
+  --color-sand: #ede3d4;
+  --color-mist: #d8cdbd;
+  --color-olive: #3f4824;
+  --color-olive-deep: #3f4824;
+  --color-olive-soft: #ede3d4;
+  --color-accent-secondary: #777752;
+  --color-neutral-accent: #a38e79;
+  --color-hover-soft: #777752;
+  --color-earth: #39372f;
+  --color-earth-deep: #39372f;
+  --color-ink: #39372f;
+  --color-whatsapp: #25d366;
 
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Fraunces", "Georgia", ui-serif, serif;
 }
 
 /*
-  Identidade visual — editorial premium (verde oliva / creme / marrom-terra).
-  Hierarquia por blocos de cor: paper -> cream -> mist -> earth -> earth-deep.
-  Contrastes verificados (WCAG AA):
-  - earth #4A4037 sobre paper #F8F6F1 -> ~9.3:1
-  - olive-deep #55624B sobre paper    -> ~6.0:1
-  - cream #EDE9E1 sobre earth         -> ~7.4:1
-  - muted-fg #6B6355 sobre paper      -> ~4.9:1
+  Identidade visual oficial:
+  - Fundo Principal da Página: #faf8f3 (Branco suave acolhedor)
+  - Fundo dos Cards e Secções Alternadas: #f3efe7 (Creme neutro para contraste suave)
+  - Bordas de Separação, Linhas Sutis e Inputs: #d8cdbd (Bege neutro)
+  - Tipografia Principal (Títulos e Parágrafos): #39372f (Tom escuro sofisticado)
+  - Botões de Ação Principal (CTAs / Agendar): #3f4824 (Verde-oliva escuro)
+  - Botões Secundários, Chips e Badges: #777752 ou fundo suave #f3efe7 com texto em #3f4824
+  - Destaques Tipográficos (aspas de depoimentos, itálicos e detalhes): #8a542f (Castanho terracota acolhedor)
+  - Toques Neutros Complementares: #a38e79
 */
 :root {
   --radius: 0.375rem;
 
-  /* superfícies */
-  --paper: #f8f6f1;
-  --cream: #ede9e1;
-  --sand: #f2eee5;
-  --mist: #e9ece2;
+  /* Superfícies */
+  --paper: #faf8f3 !important;
+  --cream: #ede3d4 !important;
+  --sand: #ede3d4 !important;
+  --mist: #d8cdbd !important;
 
-  /* tinta */
-  --earth: #4a4037;
-  --earth-deep: #362d23;
-  --ink: #2a211a;
+  /* Tipografia principal */
+  --earth: #39372f !important;
+  --earth-deep: #39372f !important;
+  --ink: #39372f !important;
 
-  /* verdes da marca */
-  --olive: #7a8b6f;
-  --olive-deep: #55624b;
-  --olive-soft: #dde3d2;
+  /* Ação principal (CTAs, Agendar) */
+  --primary: #3f4824 !important;
+  --primary-foreground: #ffffff !important;
+  --olive: #3f4824 !important;
+  --olive-deep: #3f4824 !important;
+  --olive-soft: #ede3d4 !important;
 
-  /* tokens semânticos (compatibilidade shadcn/ui) */
-  --background: var(--paper);
-  --foreground: var(--earth);
-  --card: #fcfaf6;
-  --card-foreground: var(--earth);
-  --popover: var(--paper);
-  --popover-foreground: var(--earth);
-  --primary: var(--olive-deep);
-  --primary-foreground: #fcfaf6;
-  --secondary: var(--mist);
-  --secondary-foreground: var(--olive-deep);
-  --muted: var(--cream);
-  --muted-foreground: #6b6355;
-  --accent: var(--mist);
-  --accent-foreground: var(--olive-deep);
-  --destructive: #a3402e;
-  --destructive-foreground: #fcfaf6;
-  --border: #ddd5c7;
-  --input: #ddd5c7;
-  --ring: var(--olive);
-  --whatsapp: #25d366;
+  /* Secundários e badges */
+  --secondary: #777752 !important;
+  --secondary-foreground: #ffffff !important;
+  --accent-secondary: #777752 !important;
+  --hover-soft: #777752 !important;
+
+  /* Destaques tipográficos e aspas */
+  --accent: #8a542f !important;
+  --accent-brand: #8a542f !important;
+  --accent-foreground: #ffffff !important;
+
+  /* Toques neutros */
+  --neutral-accent: #a38e79 !important;
+
+  /* Linhas, bordas e inputs */
+  --border: #a38e79 !important;
+  --input: #a38e79 !important;
+  --ring: #3f4824 !important;
+
+  /* Tokens semânticos */
+  --background: #faf8f3 !important;
+  --foreground: #39372f !important;
+  --card: #faf8f3 !important;
+  --card-foreground: #39372f !important;
+  --popover: #faf8f3 !important;
+  --popover-foreground: #39372f !important;
+  --muted: #f3efe7 !important;
+  --muted-foreground: #777752 !important;
+  --destructive: #a3402e !important;
+  --destructive-foreground: #ffffff !important;
+  --whatsapp: #25d366 !important;
 }
 
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: #d8cdbd;
   }
   html {
     scroll-behavior: smooth;
+    background-color: #faf8f3 !important;
   }
   body {
-    background-color: var(--color-paper);
-    color: var(--color-earth);
+    background-color: #faf8f3 !important;
+    color: #39372f !important;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -123,14 +156,48 @@
     font-optical-sizing: auto;
     letter-spacing: -0.02em;
     text-wrap: balance;
+    color: #39372f !important;
   }
   em,
   blockquote {
     font-optical-sizing: auto;
   }
+  em.text-accent,
+  .text-accent {
+    color: #8a542f !important;
+    font-weight: 600 !important;
+  }
+  .bg-paper {
+    background-color: #faf8f3 !important;
+  }
+  .bg-cream {
+    background-color: #ede3d4 !important;
+  }
+  .bg-card {
+    background-color: #faf8f3 !important;
+    border: 1.5px solid #a38e79 !important;
+  }
+  .text-earth {
+    color: #39372f !important;
+  }
+  .text-neutral-accent {
+    color: #a38e79 !important;
+  }
+  .border-border {
+    border-color: #a38e79 !important;
+  }
+  .border-highlight {
+    border-color: #a38e79 !important;
+  }
+  .border-subtle {
+    border-color: #d8cdbd !important;
+  }
+  .border-mist {
+    border-color: #d8cdbd !important;
+  }
   ::selection {
-    background-color: var(--olive-soft);
-    color: var(--earth);
+    background-color: #f3efe7;
+    color: #3f4824;
   }
   :focus-visible {
     outline: 2px solid var(--ring);
@@ -153,19 +220,19 @@
 @layer components {
   /* Eyebrow/kicker editorial */
   .eyebrow {
-    @apply inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.3em];
-    color: var(--olive-deep);
+    @apply inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em];
+    color: #8a542f !important;
   }
   .eyebrow::before {
     content: "";
     @apply h-px w-8;
-    background: color-mix(in srgb, var(--olive-deep) 55%, transparent);
+    background: #8a542f;
   }
   .eyebrow-light {
-    color: color-mix(in srgb, var(--cream) 85%, transparent);
+    color: #8a542f !important;
   }
   .eyebrow-light::before {
-    background: color-mix(in srgb, var(--cream) 45%, transparent);
+    background: #8a542f;
   }
 
   /* Botões — pílula contemporânea, sentence-case, com seta viva */
@@ -173,24 +240,46 @@
     @apply inline-flex items-center justify-center gap-2.5 rounded-full px-7 py-3.5 text-sm font-semibold tracking-[0.01em] transition-all duration-300;
   }
   .btn-primary {
-    @apply text-[#fcfaf6];
-    background: var(--earth);
+    background-color: #3f4824 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px 0 rgba(63, 72, 36, 0.35) !important;
   }
   .btn-primary:hover {
-    background: var(--olive-deep);
+    background-color: #4f5b2e !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 20px 0 rgba(63, 72, 36, 0.45) !important;
+  }
+  .btn-secondary {
+    background-color: #777752 !important;
+    color: #ffffff !important;
+  }
+  .btn-secondary:hover {
+    background-color: #3f4824 !important;
+    color: #ffffff !important;
+  }
+  .btn-subtle {
+    background-color: #f3efe7 !important;
+    color: #3f4824 !important;
+    border: 1px solid #d8cdbd !important;
+  }
+  .btn-subtle:hover {
+    background-color: #3f4824 !important;
+    color: #ffffff !important;
+    border-color: #3f4824 !important;
   }
   .btn-light {
-    @apply text-earth;
-    background: var(--cream);
+    background-color: #3f4824 !important;
+    color: #ffffff !important;
   }
   .btn-light:hover {
-    background: #ffffff;
+    background-color: #777752 !important;
+    color: #ffffff !important;
   }
 
   /* Link editorial com deslocamento de seta */
   .link-line {
     @apply relative inline-flex items-center gap-2 text-sm font-semibold;
-    color: var(--earth);
+    color: #3f4824;
   }
   .link-line::after {
     content: "";
@@ -203,44 +292,67 @@
     opacity: 0.4;
     transition: opacity 0.3s ease;
   }
+  .link-line:hover {
+    color: #777752;
+  }
   .link-line:hover::after {
     opacity: 1;
   }
   .link-line-light {
-    color: var(--cream);
+    color: #3f4824;
   }
 
   /* Campos de formulário — linha inferior, estilo editorial */
   .field-input {
     @apply w-full rounded-none border-0 border-b bg-transparent px-0 py-3 text-[15px] transition-colors duration-300;
-    border-color: color-mix(in srgb, var(--earth) 25%, transparent);
-    color: var(--earth);
+    border-color: #d8cdbd;
+    color: #39372f;
   }
   .field-input::placeholder {
-    color: color-mix(in srgb, var(--earth) 40%, transparent);
+    color: color-mix(in srgb, var(--earth) 50%, transparent);
   }
   .field-input:focus {
     outline: none;
-    border-color: var(--earth);
+    border-color: #3f4824;
   }
 
-  /* Chips de seleção (radio escondido) */
+  /* Chips de seleção */
   .chip {
-    @apply cursor-pointer rounded-[4px] border px-4 py-2.5 text-center text-sm transition-all duration-200;
-    border-color: color-mix(in srgb, var(--earth) 20%, transparent);
-    color: var(--earth);
+    @apply cursor-pointer rounded-[6px] border px-4 py-2.5 text-center text-sm transition-all duration-200;
+    border-color: #d8cdbd;
+    background-color: #f3efe7;
+    color: #39372f;
   }
   .chip:hover {
-    border-color: color-mix(in srgb, var(--earth) 45%, transparent);
+    border-color: #777752;
+    color: #3f4824;
   }
   .chip-selected {
-    background: var(--earth);
-    border-color: var(--earth);
-    color: var(--cream);
+    background-color: #3f4824 !important;
+    border-color: #3f4824 !important;
+    color: #ffffff !important;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors;
+    background-color: #f3efe7 !important;
+    color: #777752 !important;
+    border: 1px solid #d8cdbd !important;
+  }
+  .badge:hover {
+    border-color: #777752 !important;
+  }
+
+  .tag,
+  .chip-info {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium;
+    background-color: #f3efe7 !important;
+    color: #777752 !important;
+    border: 1px solid #a38e79 !important;
   }
 
   .field-label {
     @apply mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em];
-    color: color-mix(in srgb, var(--earth) 60%, transparent);
+    color: color-mix(in srgb, var(--earth) 70%, transparent);
   }
 }

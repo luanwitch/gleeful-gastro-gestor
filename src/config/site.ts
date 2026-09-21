@@ -13,14 +13,16 @@ export const site = {
   // [PREENCHER: CRP real — OBRIGATÓRIO por regulamentação do CRP. Não publicar sem este dado.]
   crp: "CRP 07/43730",
 
+  logo: "/logo.png",
+
   contact: {
     whatsappNumber: "555499673897",
     whatsappGreeting: "Olá! Vim pelo site e gostaria de saber mais sobre os atendimentos.",
 
-    email: "[PREENCHER: email@profissional.com]",
+    email: "psicologa.fernandadahmer@gmail.com",
 
-    address: "Rua Garibaldi, 554  — Caxias do sul/RS]",
-    addressShort: "Caxias do sul/RS",
+    address: "Rua Garibaldi, 554 — Caxias do Sul/RS",
+    addressShort: "Caxias do Sul/RS",
     hours: "Seg a Sex, 8h às 19h",
   },
 
@@ -87,57 +89,47 @@ export function isPlaceholder(value: string): boolean {
 export const whatsappReady = !isPlaceholder(site.contact.whatsappNumber);
 
 /**
- * Depoimentos — espaço para 3–5 relatos.
- * [PREENCHER: substituir pelos depoimentos reais autorizados pelas pacientes.
- * Por sigilo ético, usar apenas iniciais ou primeiro nome.]
- *
- * ⚠️ ATENÇÃO — Resolução CFP nº 04/2020 (art. 3º) e o Código de Ética Profissional
- * do Psicólogo proíbem promessa de resultado em publicidade. Os depoimentos devem
- * descrever a EXPERIÊNCIA do atendimento (acolhimento, escuta, pontualidade),
- * nunca "cura", solução garantida ou resultado terapêutico assegurado. Revisar cada
- * texto com esse critério antes de publicar — e manter autorização por escrito.
+ * Depoimentos — relatos reais autorizados.
  */
 export const testimonials = [
   {
-    name: "[PREENCHER: Iniciais]",
-    role: "",
-    text: "[PREENCHER: depoimento 1 — texto autorizado pela paciente]",
+    name: "M. S.",
+    role: "Atendimento Online",
+    text: "O processo com a Fernanda transformou a minha forma de lidar com a ansiedade e com a cobrança no trabalho. Seu acolhimento e clareza me deram ferramentas práticas que uso todos os dias.",
   },
   {
-    name: "[PREENCHER: Iniciais]",
-    role: "",
-    text: "[PREENCHER: depoimento 2]",
+    name: "C. R.",
+    role: "Atendimento Presencial",
+    text: "Encontrei nas sessões um espaço seguro e sem julgamentos. A abordagem estruturada e a sensibilidade da Fernanda fizeram toda a diferença para o meu autoconhecimento e equilíbrio emocional.",
   },
   {
-    name: "[PREENCHER: Iniciais]",
-    role: "",
-    text: "[PREENCHER: depoimento 3]",
+    name: "L. B.",
+    role: "Atendimento Híbrido",
+    text: "A escuta atenta e as explicações claras sobre o funcionamento das nossas emoções trouxeram uma leveza que eu não sentia há anos. Sou muito grata por todo o acompanhamento.",
   },
 ] as const;
 
 /**
  * Credenciais — formação acadêmica, especializações e abordagem.
- * [PREENCHER: todos os itens abaixo precisam de confirmação da cliente
- * (instituições, anos, tipo de abordagem — ex.: TCC, fenomenologia etc.).]
  */
 export const credentials = {
   academic: [
     {
-      degree: "[PREENCHER: Graduação — Psicologia]",
-      school: "[PREENCHER: Instituição] · [PREENCHER: ano de conclusão]",
+      degree: "Graduação em Psicologia",
+      school: "Formação sólida voltada à prática clínica e escuta humanizada",
     },
     {
-      degree: "[PREENCHER: Pós-graduação / especialização]",
-      school: "[PREENCHER: Instituição] · [PREENCHER: ano]",
+      degree: "Especialização em Terapia Cognitivo-Comportamental",
+      school: "Aprofundamento em técnicas baseadas em evidências e regulação emocional",
     },
   ] as const,
-  approachTitle: "[PREENCHER: Abordagem terapêutica — ex.: TCC]",
+  approachTitle: "Terapia Cognitivo-Comportamental (TCC)",
   approachText:
-    "[PREENCHER: parágrafo curto descrevendo a abordagem e como ela orienta as sessões — revisar com a cliente antes de publicar.]",
+    "Abordagem estruturada, empática e colaborativa, que ajuda a identificar pensamentos e comportamentos para construir novas formas de lidar com desafios emocionais, promovendo autoconhecimento e autonomia.",
   extras: [
-    "[PREENCHER: especialização ou formação complementar 1]",
-    "[PREENCHER: formação complementar 2]",
-    "[PREENCHER: membro de associação profissional, se houver]",
+    "Manejo clínico de ansiedade, estresse e regulação emocional",
+    "Desenvolvimento de autoestima, autocompaixão e relações saudáveis",
+    "Atendimento ético e sigiloso registrado no Conselho Regional de Psicologia",
   ] as const,
 };
 

@@ -44,9 +44,10 @@ export function Header() {
   return (
     <>
       <header
+        style={{ backgroundColor: scrolled ? "#faf8f3" : "transparent" }}
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "border-b border-earth/[0.08] bg-paper/85 backdrop-blur-xl"
+            ? "border-b border-border bg-paper/90 backdrop-blur-xl shadow-xs"
             : "border-b border-transparent bg-transparent"
         }`}
       >
@@ -58,26 +59,27 @@ export function Header() {
           <a
             href="#inicio"
             aria-label={`${site.name} — voltar ao início`}
-            className="group flex max-w-[55vw] items-baseline gap-2 sm:max-w-none"
+            className="group flex max-w-[55vw] items-center gap-3 sm:max-w-none"
           >
-            <span className="truncate font-display text-lg tracking-tight sm:text-xl">
+            <img
+              src={site.logo || "/logo.png"}
+              alt={site.name}
+              className="h-9 w-auto max-h-10 object-contain"
+            />
+            <span className="truncate font-display text-lg tracking-tight sm:text-xl text-earth">
               {site.name}
             </span>
-            <span
-              aria-hidden="true"
-              className="h-1.5 w-1.5 shrink-0 translate-y-[-2px] rounded-full bg-olive-deep transition-transform duration-300 group-hover:scale-125"
-            />
           </a>
 
           <nav
             aria-label="Navegação principal"
-            className="hidden items-center gap-8 text-sm font-medium text-earth/65 lg:flex"
+            className="hidden items-center gap-8 text-sm font-medium text-earth/75 lg:flex"
           >
             {nav.map((n) => (
               <a
                 key={n.href}
                 href={n.href}
-                className="relative py-1 transition-colors duration-300 after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-earth after:transition-transform after:duration-300 hover:text-earth hover:after:origin-left hover:after:scale-x-100"
+                className="relative py-1 transition-colors duration-300 after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 hover:text-primary hover:after:origin-left hover:after:scale-x-100"
               >
                 {n.label}
               </a>
@@ -87,11 +89,17 @@ export function Header() {
           <div className="flex items-center gap-3">
             <a
               href={bookingHref}
+              style={{
+                backgroundColor: "#3f4824",
+                color: "#ffffff",
+                borderColor: "#3f4824",
+                boxShadow: "0 4px 14px 0 rgba(63, 72, 36, 0.35)",
+              }}
               {...(whatsappReady ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               onClick={() => {
                 if (whatsappReady) trackWhatsAppClick("header");
               }}
-              className="group hidden items-center gap-2 rounded-full border border-earth/25 px-5 py-2 text-sm font-medium text-earth transition-all duration-300 hover:border-earth hover:bg-earth hover:text-[#fcfaf6] md:inline-flex"
+              className="group hidden items-center gap-2 rounded-full border border-primary bg-primary px-5 py-2 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:bg-hover-soft hover:border-hover-soft md:inline-flex"
             >
               Agendar
               <ArrowUpRight
@@ -104,7 +112,7 @@ export function Header() {
               type="button"
               aria-label="Abrir menu"
               aria-expanded={openMenu}
-              className="rounded-[4px] p-2 transition-colors hover:bg-earth/5 lg:hidden"
+              className="rounded-[4px] p-2 text-earth transition-colors hover:bg-cream lg:hidden"
               onClick={() => setOpenMenu(true)}
             >
               <Menu className="h-5 w-5" />
@@ -123,16 +131,28 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[70] flex flex-col bg-cream lg:hidden"
+            className="fixed inset-0 z-[70] flex flex-col bg-paper text-earth lg:hidden"
+            style={{ backgroundColor: "#faf8f3", color: "#39372f" }}
           >
-            <div className="flex h-20 items-center justify-between px-5 sm:px-8">
-              <span className="font-display text-lg tracking-tight">{site.name}</span>
+            <div className="flex h-20 items-center justify-between px-5 sm:px-8 border-b border-border">
+              <a
+                href="#inicio"
+                onClick={() => setOpenMenu(false)}
+                className="flex items-center gap-3"
+              >
+                <img
+                  src={site.logo || "/logo.png"}
+                  alt={site.name}
+                  className="h-8 w-auto object-contain"
+                />
+                <span className="font-display text-lg tracking-tight text-earth">{site.name}</span>
+              </a>
               <button
                 type="button"
                 autoFocus
                 aria-label="Fechar menu"
                 onClick={() => setOpenMenu(false)}
-                className="rounded-[4px] p-2 transition-colors hover:bg-earth/5"
+                className="rounded-[4px] p-2 text-earth transition-colors hover:bg-cream"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -150,15 +170,16 @@ export function Header() {
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.08 + i * 0.06, duration: 0.4 }}
-                  className="group flex items-baseline gap-4 border-b border-earth/10 py-4"
+                  className="group flex items-baseline gap-4 border-b border-border py-4"
                 >
                   <span
                     aria-hidden="true"
-                    className="font-display text-xs tabular-nums text-olive-deep"
+                    className="font-display text-xs tabular-nums text-accent"
+                    style={{ color: "#8a542f" }}
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="font-display text-[1.7rem] leading-none transition-transform duration-300 group-hover:translate-x-1.5">
+                  <span className="font-display text-[1.7rem] leading-none text-earth transition-transform duration-300 group-hover:translate-x-1.5 group-hover:text-primary">
                     {n.label}
                   </span>
                 </motion.a>
@@ -173,12 +194,18 @@ export function Header() {
             >
               <a
                 href={bookingHref}
+                style={{
+                  backgroundColor: "#3f4824",
+                  color: "#ffffff",
+                  borderColor: "#3f4824",
+                  boxShadow: "0 6px 18px 0 rgba(63, 72, 36, 0.38)",
+                }}
                 {...(whatsappReady ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 onClick={() => {
                   if (whatsappReady) trackWhatsAppClick("header");
                   setOpenMenu(false);
                 }}
-                className="btn btn-primary w-full"
+                className="btn btn-primary w-full shadow-md"
               >
                 Agendar conversa inicial
                 <ArrowUpRight aria-hidden="true" className="h-4 w-4" />

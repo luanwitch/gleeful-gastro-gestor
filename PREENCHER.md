@@ -18,7 +18,7 @@ detecta os placeholders (inclusive valores-sentinelas como `55SEUNUMERO`,
 | Nome da profissional                         | Header, Hero, Sobre, rodapé, SEO            | `[PREENCHER: Nome da Psicóloga]`                                                   |
 | CRP                                          | Seção Formação, rodapé, schema.org          | `[PREENCHER: CRP 00/00000]` — **obrigatório por regulamentação; não publicar sem** |
 | WhatsApp (formato internacional, só dígitos) | Todos os CTAs, formulário                   | `55SEUNUMERO`                                                                      |
-| E-mail                                       | Rodapé, schema.org                          | `[PREENCHER: email@profissional.com]`                                              |
+| E-mail                                       | Rodapé, schema.org                          | `psicologa.fernandadahmer@gmail.com`                                               |
 | Endereço do consultório                      | Rodapé, schema.org                          | `[PREENCHER: Endereço — Cidade/UF]`                                                |
 | Horários de atendimento                      | Rodapé                                      | `[PREENCHER: dias e horários]`                                                     |
 | @ do Instagram                               | Rodapé (o link só é gerado com handle real) | `handle.do.instagram`                                                              |

@@ -11,7 +11,7 @@ const faqs = [
   },
   {
     q: "Quanto tempo dura uma sessão?",
-    a: "[PREENCHER: duração da sessão e frequência recomendada — formato sugerido: “Sessões de 50 minutos, com frequência semanal, definida junto na conversa inicial.” A clínica costuma trabalhar com 50 min; confirmar o formato da profissional antes de publicar.]",
+    a: "Sessões com duração média de 50 minutos, com frequência geralmente semanal, ajustada conforme a necessidade clínica.",
   },
   {
     q: "O atendimento pode ser online?",
@@ -23,11 +23,11 @@ const faqs = [
   },
   {
     q: "Qual o valor da consulta?",
-    a: "[PREENCHER: política de valores da profissional — formato sugerido: “Os valores são informados na conversa inicial, de forma transparente e sem surpresas”, seguido do valor da sessão/pacotes se a cliente autorizar publicar. Não inventar números.]",
+    a: "Valores e pacotes disponíveis diretamente com a terapeuta no momento do contacto ou agendamento.",
   },
   {
     q: "Você atende adolescentes ou crianças?",
-    a: "[PREENCHER: definir com a profissional se atende menores de idade. Se sim, informar faixa etária (ex.: adolescentes a partir de 14 anos) e como funciona a autorização/acompanhamento dos responsáveis. Se não atender, sugerir: “No momento, o atendimento é destinado a adultos.”]",
+    a: "O atendimento clínico é voltado para adultos e adolescentes (a partir de 14 anos, com alinhamento e autorização dos responsáveis), garantindo um espaço acolhedor e confidencial para cada etapa de desenvolvimento.",
   },
 ];
 
@@ -35,7 +35,7 @@ export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <Section id="faq" tone="cream" className="border-t border-earth/10">
+    <Section id="faq" tone="cream" className="border-t border-border">
       <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
@@ -43,7 +43,7 @@ export function Faq() {
             <Title>
               Perguntas <Accent>frequentes</Accent>
             </Title>
-            <p className="mt-6 max-w-xs leading-relaxed text-earth/70">
+            <p className="mt-6 max-w-xs leading-relaxed text-earth/75">
               Não encontrou o que procurava? Me chame — respondo pessoalmente.
             </p>
             <a
@@ -65,13 +65,21 @@ export function Faq() {
           </div>
         </div>
 
-        {/* lista editorial indexada */}
+        {/* Lista de cards/acordeões com contraste real e bordas marcadas em #a38e79 */}
         <div className="lg:col-span-8">
-          <div className="border-t border-earth/10">
+          <div className="space-y-3.5">
             {faqs.map((f, i) => {
               const isOpen = open === i;
               return (
-                <div key={f.q} className="border-b border-earth/10">
+                <div
+                  key={f.q}
+                  style={{
+                    backgroundColor: isOpen ? "#ffffff" : "#faf8f3",
+                    borderColor: isOpen ? "#3f4824" : "#a38e79",
+                    borderWidth: "1.5px",
+                  }}
+                  className="rounded-xl border transition-all duration-300 p-5 sm:p-6 shadow-sm"
+                >
                   <h3>
                     <button
                       type="button"
@@ -79,31 +87,28 @@ export function Faq() {
                       aria-expanded={isOpen}
                       aria-controls={`faq-panel-${i}`}
                       id={`faq-button-${i}`}
-                      className="group grid w-full grid-cols-[2.25rem_1fr_auto] items-baseline gap-x-5 py-7 text-left sm:grid-cols-[3rem_1fr_auto] sm:gap-x-8"
+                      className="group flex w-full items-center justify-between gap-4 text-left cursor-pointer"
                     >
+                      <div className="flex items-baseline gap-4 sm:gap-6">
+                        <span
+                          aria-hidden="true"
+                          style={{ color: "#8a542f", fontWeight: 700 }}
+                          className="font-display text-sm font-bold tabular-nums"
+                        >
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <span
+                          style={{ color: isOpen ? "#3f4824" : "#39372f", fontWeight: isOpen ? 600 : 500 }}
+                          className="font-display text-[1.12rem] leading-snug tracking-[-0.01em] transition-colors duration-300 sm:text-[1.28rem]"
+                        >
+                          {f.q}
+                        </span>
+                      </div>
                       <span
                         aria-hidden="true"
-                        className={`font-display text-xs tabular-nums transition-colors duration-300 ${
-                          isOpen
-                            ? "text-olive-deep"
-                            : "text-earth/40 group-hover:text-olive-deep/70"
-                        }`}
-                      >
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span
-                        className={`font-display text-[1.25rem] leading-snug tracking-[-0.01em] transition-colors duration-300 sm:text-[1.45rem] ${
-                          isOpen ? "text-olive-deep" : "group-hover:text-earth/75"
-                        }`}
-                      >
-                        {f.q}
-                      </span>
-                      <span
-                        aria-hidden="true"
-                        className={`justify-self-end font-display text-[1.6rem] leading-none transition-transform duration-300 ${
-                          isOpen
-                            ? "rotate-45 text-olive-deep"
-                            : "text-earth/35 group-hover:text-earth/60"
+                        style={{ color: isOpen ? "#8a542f" : "#8a542f" }}
+                        className={`shrink-0 font-display text-2xl leading-none transition-transform duration-300 ${
+                          isOpen ? "rotate-45 text-accent" : "text-earth/40 group-hover:text-accent"
                         }`}
                       >
                         +
@@ -119,12 +124,14 @@ export function Faq() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.32, ease: "easeInOut" }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="overflow-hidden"
                       >
-                        <div className="grid grid-cols-[2.25rem_1fr] gap-x-5 pb-8 sm:grid-cols-[3rem_1fr] sm:gap-x-8">
-                          <span aria-hidden="true" />
-                          <p className="max-w-2xl text-[15px] leading-relaxed text-earth/70">
+                        <div className="border-t border-border/70">
+                          <p
+                            style={{ color: "#39372f" }}
+                            className="pt-4 text-sm leading-relaxed text-earth/80 sm:pt-5 sm:pl-10"
+                          >
                             {f.a}
                           </p>
                         </div>

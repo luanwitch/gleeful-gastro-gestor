@@ -8,9 +8,6 @@ const STORAGE_KEY = "cookie-consent";
  * Banner de consentimento de cookies (LGPD) — exibido SOMENTE quando o GA4
  * está configurado (VITE_GA_MEASUREMENT_ID). O Plausible é cookieless e
  * dispensa consentimento.
- *
- * "Recusar" impede o carregamento do gtag (ver script em __root.tsx);
- * a escolha fica em localStorage e pode ser revista limpando os dados do site.
  */
 export function CookieConsent() {
   const gaEnabled = !!import.meta.env.VITE_GA_MEASUREMENT_ID;
@@ -48,12 +45,12 @@ export function CookieConsent() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 24 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-xl rounded-[6px] bg-paper p-5 shadow-2xl shadow-black/25 ring-1 ring-earth/15 sm:inset-x-6 sm:p-6"
+        className="fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-xl rounded-2xl bg-paper p-5 shadow-xl shadow-earth/10 ring-1 ring-border sm:inset-x-6 sm:p-6"
       >
         <p className="text-sm leading-relaxed text-earth">
           Usamos cookies de medição de audiência para entender como o site é usado e melhorá-lo.
           Você pode aceitar ou continuar sem eles.{" "}
-          <Link to="/privacidade" className="font-semibold underline underline-offset-2">
+          <Link to="/privacidade" className="font-semibold underline underline-offset-2 hover:text-primary">
             Política de Privacidade
           </Link>
           .
@@ -69,7 +66,7 @@ export function CookieConsent() {
           <button
             type="button"
             onClick={() => decide("declined")}
-            className="btn border border-earth/25 bg-transparent px-6 py-2.5 text-xs text-earth hover:bg-earth/5"
+            className="btn border border-border bg-cream px-6 py-2.5 text-xs text-earth hover:bg-paper"
           >
             Continuar sem cookies
           </button>

@@ -19,7 +19,10 @@ export const Route = createFileRoute("/")({
 
 function LandingPage() {
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-paper text-earth">
+    <div
+      style={{ backgroundColor: "#faf8f3", color: "#39372f" }}
+      className="min-h-dvh overflow-x-hidden bg-paper text-earth"
+    >
       <Header />
       <main id="top">
         <Hero />
