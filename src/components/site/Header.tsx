@@ -86,7 +86,26 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* CTA compacto para mobile (< md) */}
+            <a
+              href={bookingHref}
+              style={{
+                backgroundColor: "#3f4824",
+                color: "#ffffff",
+                borderColor: "#3f4824",
+                boxShadow: "0 2px 8px 0 rgba(63, 72, 36, 0.28)",
+              }}
+              {...(whatsappReady ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              onClick={() => {
+                if (whatsappReady) trackWhatsAppClick("header");
+              }}
+              className="inline-flex items-center gap-1 rounded-full border border-primary bg-primary px-3 py-1.5 text-xs font-semibold text-white shadow-xs transition-all duration-200 active:scale-95 md:hidden"
+            >
+              Agendar
+              <ArrowUpRight aria-hidden="true" className="h-3 w-3" />
+            </a>
+
             <a
               href={bookingHref}
               style={{

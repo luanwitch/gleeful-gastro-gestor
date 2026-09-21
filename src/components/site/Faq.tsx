@@ -76,7 +76,7 @@ export function Faq() {
                   style={{
                     backgroundColor: isOpen ? "#ffffff" : "#faf8f3",
                     borderColor: isOpen ? "#3f4824" : "#a38e79",
-                    borderWidth: "1.5px",
+                    borderWidth: "1px",
                   }}
                   className="rounded-xl border transition-all duration-300 p-5 sm:p-6 shadow-sm"
                 >

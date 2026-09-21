@@ -142,7 +142,7 @@ export function ScheduleForm() {
             style={{
               backgroundColor: "#faf8f3",
               borderColor: "#a38e79",
-              borderWidth: "1.5px",
+              borderWidth: "1px",
               boxShadow: "0 12px 36px -6px rgba(57, 55, 47, 0.12)",
             }}
             className="rounded-2xl border bg-paper p-6 text-earth shadow-md sm:p-10"

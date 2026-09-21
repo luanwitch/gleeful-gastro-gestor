@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
 import heroImg from "@/assets/img1.png";
+import { site } from "@/config/site";
 import { reveal } from "./motion";
 
 /** Fatos institucionais — compromissos de conduta alinhados à prática clínica. */
@@ -22,9 +23,9 @@ export function Hero() {
               animate="show"
               variants={reveal}
               style={{ color: "#8a542f" }}
-              className="eyebrow"
+              className="eyebrow flex-wrap"
             >
-              Psicoterapia • Online e presencial
+              {site.title} · {site.crp} · Abordagem TCC
             </motion.p>
 
             <motion.h1
@@ -137,8 +138,13 @@ export function Hero() {
             >
               <span
                 aria-hidden="true"
-                style={{ backgroundColor: "#3f4824", color: "#ffffff", borderColor: "#3f4824" }}
-                className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full font-display text-sm font-bold shadow-xs"
+                style={{
+                  backgroundColor: "#ede3d4",
+                  color: "#8a542f",
+                  borderColor: "#a38e79",
+                  borderWidth: "1px",
+                }}
+                className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full border font-display text-sm font-bold shadow-xs"
               >
                 01
               </span>

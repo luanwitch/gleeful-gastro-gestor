@@ -44,7 +44,7 @@ export function Testimonials() {
       <MotionDiv className="mt-16 pt-6 sm:mt-20">
         {/* Card em destaque com fundo suave e borda marcada em #a38e79 */}
         <div
-          style={{ backgroundColor: "#faf8f3", borderColor: "#a38e79", borderWidth: "1.5px" }}
+          style={{ backgroundColor: "#faf8f3", borderColor: "#a38e79", borderWidth: "1px" }}
           className="relative mx-auto max-w-3xl rounded-2xl border bg-paper p-8 sm:p-12 shadow-md"
         >
           {/* Aspas decorativas em tom terracota vibrante (#8a542f) com font-weight encorpado */}

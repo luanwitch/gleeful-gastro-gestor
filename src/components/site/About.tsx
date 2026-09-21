@@ -25,14 +25,16 @@ const officePhotos = [
 
 export function About() {
   const [currentPhoto, setCurrentPhoto] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const addressReady = !site.contact.addressShort.includes("PREENCHER");
 
   useEffect(() => {
+    if (isPaused) return;
     const timer = setInterval(() => {
       setCurrentPhoto((prev) => (prev === officePhotos.length - 1 ? 0 : prev + 1));
     }, 3500);
     return () => clearInterval(timer);
-  }, []);
+  }, [isPaused]);
 
   return (
     <Section id="sobre" tone="cream" className="border-t border-border" pad="py-28 sm:py-36">
@@ -44,12 +46,15 @@ export function About() {
             style={{ borderColor: "#a38e79" }}
             className="absolute -top-5 -left-5 h-full w-full rounded-[8px] border"
           />
-          <figure>
+          <figure
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
             <div
               style={{
                 backgroundColor: "#faf8f3",
                 borderColor: "#a38e79",
-                borderWidth: "1.5px",
+                borderWidth: "1px",
                 boxShadow: "0 10px 30px -5px rgba(57, 55, 47, 0.14)",
               }}
               className="relative aspect-[4/5] w-full overflow-hidden rounded-[8px] bg-paper shadow-lg ring-2 ring-[#a38e79]/30"
@@ -75,7 +80,7 @@ export function About() {
                   style={{
                     backgroundColor: "#faf8f3",
                     borderColor: "#a38e79",
-                    borderWidth: "1.5px",
+                    borderWidth: "1px",
                   }}
                   className="flex items-center gap-1.5 rounded-full border px-2.5 py-1 shadow-sm backdrop-blur-xs"
                   role="tablist"
